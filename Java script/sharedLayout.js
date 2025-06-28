@@ -35,44 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
       hideLogoutPopup();
     });
   }
-
-  // التابات حسب الرول
-  const sidebarItems = document.querySelectorAll(".menu li");
-
-  if (userRole) {
-    const homeTab = sidebarItems[0];
-    const carsTab = sidebarItems[1];
-    const driversTab = sidebarItems[2];
-    const employeesTab = sidebarItems[3];
-    const ordersTab = sidebarItems[4];
-    const patrolsTab = sidebarItems[5];
-    const subscriptionsTab = sidebarItems[6];
-    const consumablesTab = sidebarItems[7];
-    const sparePartsTab = sidebarItems[8];
-
-    function hideTabs(...tabs) {
-      tabs.forEach(tab => {
-        if (tab) tab.style.display = "none";
-      });
-    }
-
-    if (userRole === "admin") {
-      // كل التابات متاحة
-    } 
-    else if (userRole === "generalSupervisor") {
-      hideTabs(carsTab, driversTab, patrolsTab, subscriptionsTab, employeesTab);
-    } 
-    else if (userRole === "generalManager") {
-      hideTabs(carsTab, driversTab, patrolsTab, subscriptionsTab, consumablesTab, sparePartsTab, employeesTab);
-    } 
-    else if (userRole === "patrolSupervisor") {
-      hideTabs(carsTab, driversTab, ordersTab, consumablesTab, sparePartsTab, employeesTab);
-    } 
-    else if (userRole === "workshopSupervisor") {
-      hideTabs(carsTab, driversTab, patrolsTab, subscriptionsTab, employeesTab);
-    }
-  }
-
   // قائمة الموبايل
   const menuToggle = document.getElementById("menuToggle");
   const sidebar = document.querySelector(".sidebar");
@@ -95,7 +57,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // تحميل الصفحة الرئيسية تلقائيًا
-  const homeMenuItem = document.querySelector('.menu li[onclick="changeContent(\'home\')"]');
+  const homeMenuItem = document.querySelector(
+    ".menu li[onclick=\"changeContent('home')\"]"
+  );
   if (homeMenuItem) {
     homeMenuItem.classList.add("active");
   }
@@ -114,13 +78,12 @@ function loadDashboardContent() {
   fetch(pagePath)
     .then((res) => res.text())
     .then((html) => {
-
       // Extract only the body content, not the entire HTML
-      const tempDiv = document.createElement('div');
+      const tempDiv = document.createElement("div");
       tempDiv.innerHTML = html;
 
       // Get the body content
-      const bodyContent = tempDiv.querySelector('body');
+      const bodyContent = tempDiv.querySelector("body");
       if (bodyContent) {
         content.innerHTML = bodyContent.innerHTML;
       } else {
@@ -129,7 +92,6 @@ function loadDashboardContent() {
 
       // Load the script if specified
       if (scriptPath) {
-
         // Remove existing script with the same path
         const existingScript = document.querySelector(
           `script[src="${scriptPath}"]`
@@ -153,10 +115,10 @@ function loadDashboardContent() {
 
         // Add onload handler for dashboard script
         script.onload = function () {
-          console.log('Dashboard script loaded successfully');
+          console.log("Dashboard script loaded successfully");
 
           // Force initialization if the function exists
-          if (typeof initializeDashboard === 'function') {
+          if (typeof initializeDashboard === "function") {
             initializeDashboard();
           }
         };
@@ -191,8 +153,20 @@ function logout() {
   window.location.href = "Login.html";
 }
 
-function changeContent(page) {
+document.addEventListener("DOMContentLoaded", function () {
+  const userRole = localStorage.getItem("userRole");
+  document.querySelectorAll(".menu li").forEach((li) => {
+    const roles = li.getAttribute("data-role");
+    if (roles && roles !== "all") {
+      const allowedRoles = roles.split(",").map((r) => r.trim());
+      if (!allowedRoles.includes(userRole)) {
+        li.style.display = "none";
+      }
+    }
+  });
+});
 
+function changeContent(page) {
   const content = document.getElementById("content");
   let pagePath = "";
   let scriptPath = "";
@@ -249,16 +223,14 @@ function changeContent(page) {
   }
 
   fetch(pagePath)
-
     .then((res) => res.text())
     .then((html) => {
-
       // Extract only the body content, not the entire HTML
-      const tempDiv = document.createElement('div');
+      const tempDiv = document.createElement("div");
       tempDiv.innerHTML = html;
 
       // Get the body content
-      const bodyContent = tempDiv.querySelector('body');
+      const bodyContent = tempDiv.querySelector("body");
       if (bodyContent) {
         content.innerHTML = bodyContent.innerHTML;
       } else {
@@ -267,7 +239,6 @@ function changeContent(page) {
 
       // Load the script if specified
       if (scriptPath) {
-
         // Remove existing script with the same path
         const existingScript = document.querySelector(
           `script[src="${scriptPath}"]`
@@ -302,25 +273,37 @@ function changeContent(page) {
 
 // Function to clean up global variables that might cause redeclaration issues
 function cleanupGlobalVariables() {
-
   // Common variable names that might be redeclared
   const commonVars = [
-    'consumables', 'editIndex', 'allCars', 'drivers',
-    'parts', 'vehicles', 'buses', 'orders', 'patrols', 'subscriptions',
-    'employees', 'users', 'maintenanceRequests', 'missionNotes', 'missionOrders',
-    'purchaseOrders', 'withdrawOrders', 'maintenanceRecords'
+    "consumables",
+    "editIndex",
+    "allCars",
+    "drivers",
+    "parts",
+    "vehicles",
+    "buses",
+    "orders",
+    "patrols",
+    "subscriptions",
+    "employees",
+    "users",
+    "maintenanceRequests",
+    "missionNotes",
+    "missionOrders",
+    "purchaseOrders",
+    "withdrawOrders",
+    "maintenanceRecords",
   ];
 
   // Don't clean up DOM element references as they need to be reinitialized
   // Only clean up data arrays and state variables
-  commonVars.forEach(varName => {
+  commonVars.forEach((varName) => {
     if (window.hasOwnProperty(varName)) {
       try {
         delete window[varName];
       } catch (e) {
         // If deletion fails, set to undefined
         window[varName] = undefined;
-
       }
     }
   });
