@@ -50,7 +50,7 @@ async function loadDriverData() {
         const totalDrivers = await totalResponse.json();
         
         // Fetch drivers by status
-        const workingResponse = await fetch(`${baseUrl}/Count/WithStatus/2`, {
+        const workingResponse = await fetch(`${baseUrl}/Count/WithStatus/3`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ async function loadDriverData() {
         });
         const workingDrivers = workingResponse.ok ? await workingResponse.json() : 0;
         
-        const availableResponse = await fetch(`${baseUrl}/Count/WithStatus/0`, {
+        const availableResponse = await fetch(`${baseUrl}/Count/WithStatus/1`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -66,7 +66,7 @@ async function loadDriverData() {
         });
         const availableDrivers = availableResponse.ok ? await availableResponse.json() : 0;
         
-        const onLeaveResponse = await fetch(`${baseUrl}/Count/WithStatus/1`, {
+        const onLeaveResponse = await fetch(`${baseUrl}/Count/WithStatus/2`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -107,7 +107,7 @@ async function loadCarData() {
         const totalCars = await totalResponse.json();
         
         // Fetch cars by status
-        const maintenanceResponse = await fetch(`${baseUrl}/Count/WithStatus/2`, {
+        const maintenanceResponse = await fetch(`${baseUrl}/Count/WithStatus/3`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -115,7 +115,7 @@ async function loadCarData() {
         });
         const maintenanceCars = maintenanceResponse.ok ? await maintenanceResponse.json() : 0;
         
-        const availableResponse = await fetch(`${baseUrl}/Count/WithStatus/0`, {
+        const availableResponse = await fetch(`${baseUrl}/Count/WithStatus/1`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -123,7 +123,7 @@ async function loadCarData() {
         });
         const availableCars = availableResponse.ok ? await availableResponse.json() : 0;
         
-        const workingResponse = await fetch(`${baseUrl}/Count/WithStatus/1`, {
+        const workingResponse = await fetch(`${baseUrl}/Count/WithStatus/2`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -150,7 +150,7 @@ async function loadCarData() {
 async function loadOrderData() {
     try {
         const token = localStorage.getItem('token');
-        const baseUrl = 'https://movesmartapi.runasp.net/api/Orders';
+        const baseUrl = 'https://movesmartapi.runasp.net/api/Application';
         
         // Fetch total orders
         const totalResponse = await fetch(`${baseUrl}/Count`, {
@@ -163,19 +163,49 @@ async function loadOrderData() {
         if (!totalResponse.ok) throw new Error('Failed to fetch total orders');
         const totalOrders = await totalResponse.json();
         
-        // For now, set default values for order statuses
-        const pendingOrders = Math.floor(totalOrders * 0.3);
-        const approvedOrders = Math.floor(totalOrders * 0.6);
-        const rejectedOrders = totalOrders - pendingOrders - approvedOrders;
+        // Fetch application by status
+        const confirmedResponse = await fetch(`${baseUrl}/Count/Status/1`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const confirmedApplications = confirmedResponse.ok ? await confirmedResponse.json() : 0;
+        
+        const rejectedResponse = await fetch(`${baseUrl}/Count/Status/2`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const rejectedApplications = rejectedResponse.ok ? await rejectedResponse.json() : 0;
+        
+        const pendingResponse = await fetch(`${baseUrl}/Count/Status/3`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const pendingApplications = pendingResponse.ok ? await pendingResponse.json() : 0;
+
+        const cancelledResponse = await fetch(`${baseUrl}/Count/Status/4`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const cancelledApplications = cancelledResponse.ok ? await cancelledResponse.json() : 0;
+
+        console.log(totalOrders, pendingApplications, confirmedApplications, rejectedApplications, cancelledApplications);
         
         // Update UI
-        document.getElementById('total-orders').textContent = totalOrders;
-        document.getElementById('orders-pending').textContent = pendingOrders;
-        document.getElementById('orders-approved').textContent = approvedOrders;
-        document.getElementById('orders-rejected').textContent = rejectedOrders;
+        document.getElementById('total-orders').textContent = totalOrders.count;
+        document.getElementById('orders-pending').textContent = pendingApplications.count;
+        document.getElementById('orders-approved').textContent = confirmedApplications.count;
+        document.getElementById('orders-rejected').textContent = rejectedApplications.count;
         
         // Create chart
-        createOrderChart([pendingOrders, approvedOrders, rejectedOrders]);
+        createOrderChart([pendingApplications.count, confirmedApplications.count, rejectedApplications.count]);
         
     } catch (error) {
         console.error('Error loading order data:', error);
