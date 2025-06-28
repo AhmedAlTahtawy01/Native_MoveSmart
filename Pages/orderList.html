@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>صفحة الطلبات</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../Assets/Images/favicon_io/favicon.ico"
+    />
+    <link rel="stylesheet" href="../../Assets/Styles/orderList.css" />
+  </head>
+  <body>
+    <!-- Header with filter and refresh buttons -->
+    <div class="page-header">
+      <h1 class="page-title">إدارة الطلبات</h1>
+      <div class="header-actions">
+        <button class="header-btn" onclick="refreshRequests()">
+          <span class="icon">🔄</span>
+          <span>تحديث</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Application Cards Section -->
+    <div class="applications-section">
+      <div class="section-header">
+        <h2>أنواع الطلبات</h2>
+        <p>اختر نوع الطلب الذي تريد إدارته</p>
+      </div>
+
+      <div class="applications-grid">
+        <div class="application-card" id="purchaseOrder">
+          <div class="card-icon">🛒</div>
+          <h3 class="card-title">إذن الشراء</h3>
+          <p class="card-description">إدارة طلبات الشراء والمخازن</p>
+          <div class="card-badge active">متاح</div>
+        </div>
+
+        <div class="application-card" id="WithdrawOrder">
+          <div class="card-icon">💰</div>
+          <h3 class="card-title">إذن الصرف</h3>
+          <p class="card-description">إدارة طلبات الصرف المالي</p>
+          <div class="card-badge active">متاح</div>
+        </div>
+
+        <!-- كارت طلبات الصيانة -->
+        <div class="application-card" id="maintenanceRequestsCard">
+          <div class="card-icon">🔧</div>
+          <h3 class="card-title">طلبات الصيانة</h3>
+          <p class="card-description">إدارة طلبات الصيانة وإرسالها للموافقة</p>
+          <div class="card-badge active">متاح</div>
+        </div>
+
+        <!-- كارت الصيانة الفعلية -->
+        <div class="application-card" id="actualMaintenanceCard">
+          <div class="card-icon">🛠️</div>
+          <h3 class="card-title">الصيانة الفعلية</h3>
+          <p class="card-description">تسجيل أعمال الصيانة المنفذة للمركبات</p>
+          <div class="card-badge active">متاح</div>
+        </div>
+
+        <div class="application-card active" id="jobOrder">
+          <div class="card-icon">⚙️</div>
+          <h3 class="card-title">أوامر الشغل</h3>
+          <p class="card-description">إدارة أوامر الشغل والمهام</p>
+          <div class="card-badge active">متاح</div>
+        </div>
+
+        <!-- كارت ملاحظات المأموريات -->
+        <div class="application-card" id="missionNotesCard">
+          <div class="card-icon">📝</div>
+          <h3 class="card-title">ملاحظات المأموريات</h3>
+          <p class="card-description">إدارة ملاحظات مدير المستشفى</p>
+          <div class="card-badge active">متاح</div>
+        </div>
+
+        <!-- كارت أمر المأمورية -->
+        <div class="application-card" id="missionOrder">
+          <div class="card-icon">🚗</div>
+          <h3 class="card-title">أوامر المأمورية</h3>
+          <p class="card-description">إدارة أوامر المأموريات والمهام</p>
+          <div class="card-badge active">متاح</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Request List -->
+    <div id="request-list" class="space-y-2"></div>
+
+    <!-- Popup -->
+    <div id="popup" class="popup hidden">
+      <div class="popup-content">
+        <h2 class="text-gray-600 text-sm">اسم الطلب</h2>
+        <p id="popup-date"></p>
+        <h3>رقم المسلسل</h3>
+        <p id="popup-id"></p>
+        <h4>اسم الشخص</h4>
+        <div style="border-top: 1px solid #ccc; margin: 16px 0"></div>
+        <div class="flex-between" style="text-align: right">
+          <div>
+            <p>القطعة: اسم القطعة</p>
+            <p>الوصف: وصف القطعة</p>
+            <p>الكمية: الكمية</p>
+          </div>
+          <div>
+            <p>الحالة:</p>
+            <span id="popup-status" class="badge"></span>
+          </div>
+        </div>
+        <div class="flex-between" style="margin-top: 16px">
+          <button class="button-accepted" onclick="closePopup()">موافقة</button>
+          <button class="button-rejected" onclick="closePopup()">رفض</button>
+        </div>
+      </div>
+    </div>
+    <!-- Job Order Popup -->
+    <div id="jobOrderPopup" class="popup hidden">
+      <div
+        class="popup-content"
+        style="width: 90%; max-height: 80vh; overflow-y: auto"
+      >
+        <div class="flex-between">
+          <h2>أوامر الشغل</h2>
+          <button onclick="closeJobOrderPopup()">❌</button>
+        </div>
+        <div style="margin-bottom: 12px; text-align: left">
+          <button
+            id="jobOrder-Btn"
+            class="button"
+            onclick="openAddJobOrderForm()"
+          >
+            ➕ إضافة أمر شغل
+          </button>
+        </div>
+        <div id="jobOrdersContainer" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Job Order Form -->
+    <div id="addJobOrderPopup" class="popup hidden">
+      <div class="popup-content job-order-form">
+        <div class="form-header">
+          <h2>أمر شغل جديد</h2>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeAddJobOrderForm()"
+          >
+            ✕
+          </button>
+        </div>
+
+        <form id="jobOrderForm" onsubmit="submitJobOrder(event)">
+          <!-- Basic Information Section -->
+          <div class="form-section">
+            <h3 class="section-title">معلومات أساسية</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="orderId">رقم الأمر</label>
+                <input type="number" id="orderId" />
+              </div>
+              <div class="form-group">
+                <label for="applicationId">رقم الطلب</label>
+                <input type="number" id="applicationId" />
+              </div>
+              <div class="form-group">
+                <label for="status">الحالة</label>
+                <select id="status" required disabled>
+                  <option value="">اختر الحالة</option>
+                  <option value="1">قادمة</option>
+                  <option value="2">منتهية</option>
+                  <option value="3">قيد العمل</option>
+                  <option value="4">ملغي</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="applicationType">نوع الطلب</label>
+                <select id="applicationType" required>
+                  <option value="">اختر نوع الطلب</option>
+                  <option value="0">شراء</option>
+                  <option value="1">صرف</option>
+                  <option value="2">صيانة</option>
+                  <option value="3">مأمورية</option>
+                  <option value="4">أمر شغل</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="applicationDescription">وصف الطلب</label>
+                <textarea
+                  id="applicationDescription"
+                  required
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="createdByUserID">رقم المستخدم</label>
+                <input type="number" id="createdByUserID" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Vehicle & Driver Section -->
+          <div class="form-section">
+            <h3 class="section-title">معلومات السيارة والسائق</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="vehicleId">السيارة</label>
+                <select id="vehicleId" required>
+                  <option value="">اختر السيارة</option>
+                  <!-- Options will be populated dynamically -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="driverId">السائق</label>
+                <select id="driverId" required>
+                  <option value="">اختر السائق</option>
+                  <!-- Options will be populated dynamically -->
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="destination">الوجهة</label>
+                <input type="text" id="destination" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- Date & Time Section -->
+          <div class="form-section">
+            <h3 class="section-title">التوقيت</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="startDate">تاريخ البداية</label>
+                <input type="date" id="startDate" required readonly />
+              </div>
+              <div class="form-group">
+                <label for="startTime">وقت البداية</label>
+                <input type="time" id="startTime" required />
+              </div>
+              <div class="form-group">
+                <label for="endDate">تاريخ النهاية</label>
+                <input type="date" id="endDate" required readonly />
+              </div>
+              <div class="form-group">
+                <label for="endTime">وقت النهاية</label>
+                <input type="time" id="endTime" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- Odometer Section -->
+          <div class="form-section">
+            <h3 class="section-title">قراءة العداد</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="odometerBefore">عداد قبل</label>
+                <input type="number" id="odometerBefore" required />
+              </div>
+              <div class="form-group">
+                <label for="odometerAfter">عداد بعد</label>
+                <input type="number" id="odometerAfter" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">
+              <span>💾</span> حفظ
+            </button>
+            <button
+              class="btn btn-secondary"
+              type="button"
+              onclick="closeAddJobOrderForm()"
+            >
+              <span>❌</span> إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Purchase Order Popup -->
+    <div id="purchaseOrderPopup" class="popup hidden">
+      <div
+        class="popup-content"
+        style="width: 90%; max-height: 80vh; overflow-y: auto"
+      >
+        <div class="flex-between">
+          <h2>طلبات الشراء</h2>
+          <button onclick="closePurchaseOrderPopup()">❌</button>
+        </div>
+        <div style="margin-bottom: 12px; text-align: left">
+          <button
+            id="addPurchaseOrderBtn"
+            class="button"
+            onclick="openAddPurchaseOrderForm()"
+          >
+            ➕ إضافة طلب شراء
+          </button>
+        </div>
+        <div id="purchaseOrdersContainer" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Purchase Order Form -->
+    <div id="addPurchaseOrderPopup" class="popup hidden">
+      <div class="popup-content job-order-form">
+        <div class="form-header">
+          <h2>طلب شراء جديد</h2>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeAddPurchaseOrderForm()"
+          >
+            ✕
+          </button>
+        </div>
+        <form id="purchaseOrderForm" onsubmit="submitPurchaseOrder(event)">
+          <div class="form-section">
+            <h3 class="section-title">معلومات الطلب</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="purchaseOrderType">نوع الطلب</label>
+                <select
+                  id="purchaseOrderType"
+                  required
+                  onchange="togglePurchaseType()"
+                >
+                  <option value="">اختر نوع الطلب</option>
+                  <option value="spare">قطع غيار</option>
+                  <option value="consumable">مستهلكات</option>
+                </select>
+              </div>
+              <div
+                class="form-group"
+                id="sparePartsGroup"
+                style="display: none"
+              >
+                <label for="sparePartSelect">اختر قطعة الغيار</label>
+                <select id="sparePartSelect"></select>
+              </div>
+              <div
+                class="form-group"
+                id="consumableGroup"
+                style="display: none"
+              >
+                <label for="consumableSelect">اختر المستهلك</label>
+                <select id="consumableSelect"></select>
+              </div>
+              <div class="form-group">
+                <label for="requiredQuantity">الكمية المطلوبة</label>
+                <input type="number" id="requiredQuantity" required min="1" />
+              </div>
+              <div class="form-group">
+                <label for="purchaseOrderDescription">الوصف</label>
+                <textarea
+                  id="purchaseOrderDescription"
+                  required
+                  rows="2"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">
+              <span>💾</span> حفظ
+            </button>
+            <button
+              class="btn btn-secondary"
+              type="button"
+              onclick="closeAddPurchaseOrderForm()"
+            >
+              <span>❌</span> إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Withdraw Order Popup -->
+    <div id="withdrawOrderPopup" class="popup hidden">
+      <div
+        class="popup-content"
+        style="width: 90%; max-height: 80vh; overflow-y: auto"
+      >
+        <div class="flex-between">
+          <h2>طلبات الصرف</h2>
+          <button onclick="closeWithdrawOrderPopup()">❌</button>
+        </div>
+        <div style="margin-bottom: 12px; text-align: left">
+          <button
+            id="addWithdrawOrderBtn"
+            class="button"
+            onclick="openAddWithdrawOrderForm()"
+          >
+            ➕ إضافة طلب صرف
+          </button>
+        </div>
+        <div id="withdrawOrdersContainer" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Withdraw Order Form -->
+    <div id="addWithdrawOrderPopup" class="popup hidden">
+      <div class="popup-content job-order-form">
+        <div class="form-header">
+          <h2>طلب صرف جديد</h2>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeAddWithdrawOrderForm()"
+          >
+            ✕
+          </button>
+        </div>
+        <form id="withdrawOrderForm" onsubmit="submitWithdrawOrder(event)">
+          <div class="form-section">
+            <h3 class="section-title">معلومات الطلب</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="withdrawOrderType">نوع الطلب</label>
+                <select
+                  id="withdrawOrderType"
+                  required
+                  onchange="toggleWithdrawType()"
+                >
+                  <option value="">اختر نوع الطلب</option>
+                  <option value="spare">قطع غيار</option>
+                  <option value="consumable">مستهلكات</option>
+                </select>
+              </div>
+              <div
+                class="form-group"
+                id="withdrawSparePartsGroup"
+                style="display: none"
+              >
+                <label for="withdrawSparePartSelect">اختر قطعة الغيار</label>
+                <select id="withdrawSparePartSelect"></select>
+              </div>
+              <div
+                class="form-group"
+                id="withdrawConsumableGroup"
+                style="display: none"
+              >
+                <label for="withdrawConsumableSelect">اختر المستهلك</label>
+                <select id="withdrawConsumableSelect"></select>
+              </div>
+              <div class="form-group">
+                <label for="withdrawVehicleSelect">اختر السيارة</label>
+                <select id="withdrawVehicleSelect" required>
+                  <option value="">اختر السيارة</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="withdrawOrderDescription">الوصف</label>
+                <textarea
+                  id="withdrawOrderDescription"
+                  required
+                  rows="2"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">
+              <span>💾</span> حفظ
+            </button>
+            <button
+              class="btn btn-secondary"
+              type="button"
+              onclick="closeAddWithdrawOrderForm()"
+            >
+              <span>❌</span> إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Popup عرض طلبات الصيانة -->
+    <div id="maintenanceRequestsPopup" class="popup hidden">
+      <div
+        class="popup-content"
+        style="width: 90%; max-height: 80vh; overflow-y: auto"
+      >
+        <div class="flex-between">
+          <h2>طلبات الصيانة</h2>
+          <button onclick="closeMaintenanceRequestsPopup()">❌</button>
+        </div>
+
+        <div style="margin-bottom: 12px; text-align: left">
+          <button
+            id="addMaintenanceRequestBtn"
+            class="button hidden"
+            onclick="openAddMaintenanceRequestForm()"
+          >
+            ➕ إضافة طلب صيانة
+          </button>
+        </div>
+
+        <div id="maintenanceRequestsContainer" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- Popup: نموذج إضافة / تعديل طلب صيانة -->
+    <div id="maintenanceRequestFormPopup" class="popup hidden">
+      <div class="popup-content job-order-form">
+        <div class="form-header">
+          <h2 id="maintenanceFormTitle">طلب صيانة جديد</h2>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeMaintenanceRequestForm()"
+          >
+            ✕
+          </button>
+        </div>
+
+        <form
+          id="maintenanceRequestForm"
+          onsubmit="submitMaintenanceRequest(event)"
+        >
+          <div class="form-section">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="maintenanceVehicleSelect">السيارة</label>
+                <select id="maintenanceVehicleSelect" required>
+                  <option value="">جاري التحميل...</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="maintenanceDescription">وصف المشكلة</label>
+                <textarea
+                  id="maintenanceDescription"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">💾 حفظ</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="closeMaintenanceRequestForm()"
+            >
+              ❌ إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Popup عرض سجلات الصيانة الفعلية -->
+    <div id="maintenanceRecordsPopup" class="popup hidden">
+      <div
+        class="popup-content"
+        style="width: 90%; max-height: 80vh; overflow-y: auto"
+      >
+        <div class="flex-between">
+          <h2>سجلات الصيانة الفعلية</h2>
+          <button onclick="closeMaintenanceRecordsPopup()">❌</button>
+        </div>
+
+        <div style="margin-bottom: 12px; text-align: left">
+          <button
+            id="addActualMaintenanceBtn"
+            class="button"
+            onclick="openAddActualMaintenanceForm()"
+          >
+            ➕ إضافة صيانة فعلية
+          </button>
+        </div>
+
+        <div id="maintenanceRecordsContainer" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- Popup: نموذج إضافة / تعديل صيانة فعلية -->
+    <div id="actualMaintenanceFormPopup" class="popup hidden">
+      <div class="popup-content job-order-form">
+        <div class="form-header">
+          <h2 id="actualMaintenanceFormTitle">إضافة صيانة فعلية</h2>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeActualMaintenanceForm()"
+          >
+            ✕
+          </button>
+        </div>
+
+        <form
+          id="actualMaintenanceForm"
+          onsubmit="submitActualMaintenance(event)"
+        >
+          <div class="form-section">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="maintenanceApplicationSelect"
+                  >طلب الصيانة المرتبط</label
+                >
+                <select id="maintenanceApplicationSelect" required>
+                  <option value="">اختر طلب صيانة...</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="maintenanceDescription">تفاصيل الصيانة</label>
+                <textarea
+                  id="actualmaintenanceDescription"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="sparePartMaintenanceSelect"
+                  >قطعة الغيار المستخدمة (اختياري)</label
+                >
+                <select id="sparePartMaintenanceSelect">
+                  <option value="">-- اختر قطعة غيار --</option>
+                  <!-- populated via API -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="consumableMaintenanceSelect"
+                  >المستهلك المستخدم (اختياري)</label
+                >
+                <select id="consumableMaintenanceSelect">
+                  <option value="">-- اختر مستهلك --</option>
+                  <!-- populated via API -->
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">💾 حفظ</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="closeActualMaintenanceForm()"
+            >
+              ❌ إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- نافذة عرض ملاحظات المأموريات -->
+    <div id="missionNotesPopup" class="popup hidden">
+      <div
+        class="popup-content"
+        style="width: 90%; max-height: 80vh; overflow-y: auto"
+      >
+        <div class="flex-between">
+          <h2>ملاحظات المأموريات</h2>
+          <button onclick="closeMissionNotesPopup()">❌</button>
+        </div>
+        <div style="margin-bottom: 12px; text-align: left">
+          <button
+            id="addMissionNoteBtn"
+            class="button"
+            onclick="openAddMissionNoteForm()"
+          >
+            ➕ إضافة ملاحظة
+          </button>
+        </div>
+        <div id="missionNotesContainer" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- نافذة إضافة / تعديل ملاحظة -->
+    <div id="addMissionNotePopup" class="popup hidden">
+      <div class="popup-content">
+        <div class="form-header">
+          <h2 id="missionNoteFormTitle">ملاحظة جديدة</h2>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeMissionNoteForm()"
+          >
+            ✕
+          </button>
+        </div>
+        <form id="missionNoteForm" onsubmit="submitMissionNote(event)">
+          <div class="form-group">
+            <label for="descriptionInput">الوصف</label>
+            <textarea id="descriptionInput" required rows="3"></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">💾 حفظ</button>
+            <button
+              class="btn btn-secondary"
+              type="button"
+              onclick="closeMissionNoteForm()"
+            >
+              ❌ إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Popup عرض أوامر المأموريات -->
+    <div id="missionOrderPopup" class="popup hidden">
+      <div
+        class="popup-content"
+        style="width: 90%; max-height: 80vh; overflow-y: auto"
+      >
+        <div class="flex-between">
+          <h2>أوامر المأموريات</h2>
+          <button onclick="closeMissionOrderPopup()">❌</button>
+        </div>
+        <div style="margin-bottom: 12px; text-align: left">
+          <button
+            id="addMissionOrderBtn"
+            class="button"
+            onclick="openAddMissionOrderForm()"
+          >
+            ➕ إضافة أمر مأمورية
+          </button>
+        </div>
+        <div id="missionOrdersContainer" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- Popup فورم إضافة / تعديل -->
+    <div id="addMissionOrderPopup" class="popup hidden">
+      <div class="popup-content">
+        <div class="form-header">
+          <h2 id="missionOrderFormTitle">أمر مأمورية جديد</h2>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeMissionOrderForm()"
+          >
+            ✕
+          </button>
+        </div>
+        <form id="missionOrderForm" onsubmit="submitMissionOrder(event)">
+          <div class="form-group">
+            <label for="missionNoteSelect">ملاحظة المأمورية</label>
+            <select id="missionNoteSelect" required></select>
+          </div>
+          <div class="form-group">
+            <label for="missionVehicleSelect">المركبة</label>
+            <select id="missionVehicleSelect" required></select>
+          </div>
+          <div class="form-group">
+            <label for="missiondestination">الوجهة</label>
+            <textarea id="missiondestination" required rows="2"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="missionstartDate">تاريخ البداية</label>
+            <input type="date" id="missionstartDate" required />
+          </div>
+          <div class="form-group">
+            <label for="missionendDate">تاريخ النهاية</label>
+            <input type="date" id="missionendDate" required />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">💾 حفظ</button>
+            <button
+              class="btn btn-secondary"
+              type="button"
+              onclick="closeMissionOrderForm()"
+            >
+              ❌ إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+  <script src="../Java script/orderList.js"></script>
+</html>

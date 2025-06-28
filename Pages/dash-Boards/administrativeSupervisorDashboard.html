@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../Assets/Styles/sharedLayout.css" />
+    <link rel="stylesheet" href="../../Assets/Styles/dash-Boards/administrativeSupervisorDashboard.css" />
+    <title>Administrative Supervisor Dashboard - Move Smart</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../../Assets/Images/favicon_io/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../Assets/Images/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../Assets/Images/favicon_io/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="../../Assets/Images/favicon_io/apple-touch-icon.png">
+    
+
+</head>
+
+<body>
+    <div class="topbar">
+        <div class="profile">
+            <span id="userName">Loading...</span>
+            <img src="../../Assets/Images/users.svg" alt="User" />
+            <button id="logoutButton" class="logout-button">
+                <img src="../../Assets/Images/logout.svg" alt="Logout" />
+            </button>
+        </div>
+        <button>
+            <img class="notification" src="../../Assets/Images/bell.svg" alt="" />
+        </button>
+        <div class="search-container">
+            <input type="text" placeholder="بحـث..." />
+            <img src="../../Assets/Images/search.svg" alt="Search" />
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <h2 class="logo">Move Smart</h2>
+        <h2 class="logo">نظام التحكم في السيارات</h2>
+        <button class="create-order">إنشاء طلب</button>
+        <ul class="menu">
+            <li class="active" onclick="changeContent('home')">
+                <img src="../../Assets/Images/home.svg" alt="" /> الصفحة الرئيسية
+            </li>
+            <li onclick="changeContent('cars')">
+                <img src="../../Assets/Images/cars.svg" alt="" /> السيارات
+            </li>
+            <li onclick="changeContent('drivers')">
+                <img src="../../Assets/Images/users.svg" alt="" /> السائقين
+            </li>
+            <li onclick="changeContent('orders')">
+                <img src="../../Assets/Images/document.svg" alt="" /> الطلبات
+            </li>
+            <li onclick="changeContent('reports')">
+                <img src="../../Assets/Images/chart-pie.svg" alt="" />التقارير
+            </li>
+        </ul>
+    </div>
+
+    <div class="content" id="content">
+        <div class="dashboard-grid">
+            <!-- كارت السائقين -->
+            <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>نظرة عامة على السائقين</h2>
+                <div class="card-content">
+                    <canvas id="driverChart"></canvas>
+                    <div class="card-details">
+                        <table class="card-table">
+                            <tr>
+                                <td>إجمالي السائقين</td>
+                                <td id="total-drivers"></td>
+                            </tr>
+                            <tr>
+                                <td>أمر شغل <span class="dot orange"></span></td>
+                                <td id="working-drivers"></td>
+                            </tr>
+                            <tr>
+                                <td>متاح <span class="dot green"></span></td>
+                                <td id="available-drivers"></td>
+                            </tr>
+                            <tr>
+                                <td>إجازة <span class="dot red"></span></td>
+                                <td id="onleave-drivers"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- كارت السيارات -->
+            <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>نظرة عامة على السيارات</h2>
+                <div class="card-content">
+                    <canvas id="carChart"></canvas>
+                    <div class="card-details">
+                        <table class="card-table">
+                            <tr>
+                                <td>إجمالي السيارات</td>
+                                <td id="total-cars"></td>
+                            </tr>
+                            <tr>
+                                <td>طور الصيانة <span class="dot orange"></span></td>
+                                <td id="cars-maintenance"></td>
+                            </tr>
+                            <tr>
+                                <td>متاح <span class="dot green"></span></td>
+                                <td id="cars-available"></td>
+                            </tr>
+                            <tr>
+                                <td>أمر شغل <span class="dot red"></span></td>
+                                <td id="cars-working"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- كارت الطلبات -->
+            <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>الطلبات</h2>
+                <div class="card-content">
+                    <canvas id="orderChart"></canvas>
+                    <div class="card-details">
+                        <table class="card-table">
+                            <tr>
+                                <td>إجمالي الطلبات</td>
+                                <td id="total-orders"></td>
+                            </tr>
+                            <tr>
+                                <td>انتظار <span class="dot orange"></span></td>
+                                <td id="orders-pending"></td>
+                            </tr>
+                            <tr>
+                                <td>موافقة <span class="dot green"></span></td>
+                                <td id="orders-approved"></td>
+                            </tr>
+                            <tr>
+                                <td>مرفوض <span class="dot red"></span></td>
+                                <td id="orders-rejected"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- كارت التقارير -->
+            <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>التقارير</h2>
+                <div class="card-content">
+                    <canvas id="reportChart"></canvas>
+                    <div class="card-details">
+                        <table class="card-table">
+                            <tr>
+                                <td>إجمالي التقارير</td>
+                                <td id="total-reports"></td>
+                            </tr>
+                            <tr>
+                                <td>نوع تقرير <span class="dot orange"></span></td>
+                                <td id="report-type1"></td>
+                            </tr>
+                            <tr>
+                                <td>نوع تقرير <span class="dot green"></span></td>
+                                <td id="report-type2"></td>
+                            </tr>
+                            <tr>
+                                <td>نوع تقرير <span class="dot red"></span></td>
+                                <td id="report-type3"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- كارت الدوريات -->
+            <!-- <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>الدوريات</h2>
+                <div class="card-content">
+                    <canvas id="patrolChart"></canvas>
+                    <div class="card-details">
+                        <table class="card-table">
+                            <tr>
+                                <td>إجمالي الدوريات</td>
+                                <td id="total-patrols"></td>
+                            </tr>
+                            <tr>
+                                <td>جارية <span class="dot orange"></span></td>
+                                <td id="patrols-current"></td>
+                            </tr>
+                            <tr>
+                                <td>قادمة <span class="dot green"></span></td>
+                                <td id="patrols-upcoming"></td>
+                            </tr>
+                            <tr>
+                                <td>منتهية <span class="dot red"></span></td>
+                                <td id="patrols-finished"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <script src="../../Java script/dash-Boards/administrativeSupervisorDashboard.js"></script>
+        <script src="../../Java script/dashboards.js"></script>
+</body>
+<footer>
+    <p>جميع الحقوق محفوظة &copy; 2023 Move Smart</p>
+</footer>
+</html>

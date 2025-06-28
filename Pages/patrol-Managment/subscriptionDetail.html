@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>إدارة اشتراكات الموظفين</title>
+    <link rel="stylesheet" href="employee-subscription-style.css" />
+  </head>
+  <body>
+    <div class="employee-subscription-container">
+      <!-- الجزء العلوي -->
+      <div class="employee-top-section">
+        <div class="employee-header-container">
+          <h2 class="employee-header-title">إدارة اشتراكات الموظفين</h2>
+          <div class="employee-header-info">
+            <img src="/img/user-icon.svg" class="employee-profile-pic" />
+            <div class="employee-header-details">
+              <h2 id="employee-name">اسم الموظف</h2>
+              <p id="employee-phone">رقم الهاتف: غير متوفر</p>
+              <p id="employee-department">القسم: غير محدد</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="employee-left-side">
+          <button class="employee-back-btn">⬅ رجوع</button>
+          <div class="employee-actions">
+            <button class="employee-print-btn">🖨 طباعة</button>
+            <button class="employee-add-btn">➕ إضافة اشتراك</button>
+            <button class="employee-delete-btn">🗑 حذف</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- التبويبات -->
+      <div class="employee-tabs-container">
+        <div class="employee-tabs">
+          <button class="employee-tab active" data-tab="employee-info">
+            معلومات الموظف
+          </button>
+          <button class="employee-tab" data-tab="subscriptions-info">
+            الاشتراكات
+          </button>
+        </div>
+        <button class="employee-save-btn">✅ حفظ</button>
+      </div>
+
+      <!-- معلومات الموظف -->
+      <div class="employee-tab-content" id="employee-info">
+        <div class="employee-form-container">
+          <div class="employee-input-group">
+            <label>اسم الموظف:</label>
+            <input
+              type="text"
+              name="employeeName"
+              placeholder="أدخل اسم الموظف"
+            />
+          </div>
+          <div class="employee-input-group">
+            <label>رقم الهاتف:</label>
+            <input
+              type="tel"
+              name="employeePhone"
+              placeholder="أدخل رقم الهاتف"
+            />
+          </div>
+          <div class="employee-input-group">
+            <label>الرقم القومي:</label>
+            <input
+              type="text"
+              name="employeeNationalId"
+              placeholder="أدخل الرقم القومي"
+            />
+          </div>
+          <div class="employee-input-group">
+            <label>المسمى الوظيفي:</label>
+            <input
+              type="text"
+              name="employeeJobTitle"
+              placeholder="أدخل المسمى الوظيفي"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- الاشتراكات -->
+      <div
+        class="employee-tab-content"
+        id="subscriptions-info"
+        style="display: none"
+      >
+        <div class="employee-subscription-list">
+          <div class="employee-subscription-header">
+            <div>رقم الدورات</div>
+            <div>وقت البدء</div>
+            <div>الوقت المستغرق</div>
+            <div>رقم السيارة</div>
+            <div>حالة الاشتراك</div>
+          </div>
+          <div class="employee-subscription-items">
+            <!-- يتم تعبئتها ديناميكيا -->
+          </div>
+        </div>
+      </div>
+
+      <!-- نافذة منبثقة -->
+      <div id="subscription-modal" class="employee-subscription-modal">
+        <div class="employee-modal-content">
+          <span class="employee-close-modal">&times;</span>
+          <h3>إضافة اشتراك جديد</h3>
+          <div class="employee-modal-form">
+            <div class="employee-input-group">
+              <label>رقم الدورات:</label>
+              <input
+                type="text"
+                name="courseNumber"
+                placeholder="أدخل رقم الدورات"
+              />
+            </div>
+            <div class="employee-input-group">
+              <label>وقت البدء:</label>
+              <input type="datetime-local" name="startTime" />
+            </div>
+            <div class="employee-input-group">
+              <label>الوقت المستغرق:</label>
+              <input
+                type="text"
+                name="duration"
+                placeholder="أدخل الوقت المستغرق"
+              />
+            </div>
+            <div class="employee-input-group">
+              <label>رقم السيارة:</label>
+              <input
+                type="text"
+                name="carNumber"
+                placeholder="أدخل رقم السيارة"
+              />
+            </div>
+            <div class="employee-input-group">
+              <label>حالة الاشتراك:</label>
+              <select name="subscriptionStatus">
+                <option value="مشترك">مشترك</option>
+                <option value="غير مشترك">غير مشترك</option>
+              </select>
+            </div>
+            <button id="save-subscription-btn" class="employee-save-btn">
+              حفظ الاشتراك
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="employee-subscription-script.js"></script>
+  </body>
+</html>

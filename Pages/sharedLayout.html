@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../Assets/Styles/sharedLayout.css">
+    <link rel="stylesheet" href="../../Assets/Styles/dashboards.css">
+    <link rel="stylesheet" href="../../Assets/Styles/dash-Boards/administrativeSupervisorDashboard.css">
+    <title>Move smart</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../../Assets/Images/favicon_io/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../Assets/Images/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../Assets/Images/favicon_io/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="../../Assets/Images/favicon_io/apple-touch-icon.png">
+    
+</head>
+<body>
+    <!-- Menu Toggle Button for Mobile -->
+    <button class="menu-toggle" id="menuToggle">
+        <img src="../Assets/Images/menu.svg" alt="Menu" />
+    </button>
+
+     <div class="topbar">
+      <div class="profile">
+        <span id="userName">Loading...</span>
+        <img src="../Assets/Images/users.svg" alt="User" />
+        <button id="logoutButton" class="logout-button">
+          <img src="../Assets/Images/logout.svg" alt="Logout" />
+        </button>
+      </div>
+    </div>
+    <div class="sidebar">
+      <h2 class="logo ">Move Smart</h2>
+      <h2 class="logo">نظام التحكم في السيارات</h2>
+      <ul class="menu">
+        <li class="active" onclick="changeContent('home')">
+          <img src="../Assets/Images/home.svg" alt="" /> الصفحة الرئيسية
+        </li>
+        <li onclick="changeContent('cars')">
+          <img src="../Assets/Images/cars.svg" alt="" /> السيارات
+        </li>
+        <li onclick="changeContent('drivers')">
+          <img src="../Assets/Images/users.svg" alt="" /> السائقين
+        </li>
+        <li onclick="changeContent('employees')">
+          <img src="../Assets/Images/users.svg" alt="" /> الموظفين
+        </li>
+        <li onclick="changeContent('orders')">
+          <img src="../Assets/Images/document.svg" alt="" /> الطلبات
+        </li>
+        <li onclick="changeContent('patrols')">
+          <img src="../Assets/Images/bus.svg" alt="" /> الدوريات
+        </li>
+        <li onclick="changeContent('patrolsSubscriptions')">
+          <img src="../Assets/Images/calendar.svg" alt="" /> اشتراكات الدوريات
+        </li>
+        <li onclick="changeContent('consumables')">
+          <img src="../Assets/Images/car-mechanic.svg" alt="" /> المستهلكات
+        </li>
+        <li onclick="changeContent('spareParts')">
+          <img src="../Assets/Images/repair-alt.svg" alt="" /> قطع الغيار
+        </li>
+      </ul>
+    </div>
+
+    <div class="content" id="content">
+      <h2>مرحبًا بك في الصفحة الرئيسية</h2>
+      <p>اختر قسمًا من القائمة لعرض المحتوى.</p>
+    </div>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Logout Confirmation Popup -->
+    <div id="logoutPopup" class="logout-popup">
+      <div class="logout-popup-content">
+        <div class="logout-popup-header">
+          <h3>تأكيد تسجيل الخروج</h3>
+        </div>
+        <div class="logout-popup-body">
+          <p>هل أنت متأكد من أنك تريد تسجيل الخروج من النظام؟</p>
+        </div>
+        <div class="logout-popup-footer">
+          <button id="confirmLogout" class="btn-confirm">نعم، تسجيل الخروج</button>
+          <button id="cancelLogout" class="btn-cancel">إلغاء</button>
+        </div>
+      </div>
+    </div>
+</body>
+    <script src="../../Java script/sharedLayout.js"></script>
+</html>

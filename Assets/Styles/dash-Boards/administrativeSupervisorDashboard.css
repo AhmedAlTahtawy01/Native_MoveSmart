@@ -1,0 +1,164 @@
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  cursor: pointer;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  direction: rtl;
+}
+
+.card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.edit-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+}
+
+.card h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.card-content canvas {
+  width: 140px !important;
+  height: 140px !important;
+}
+
+.card-details {
+  flex: 1;
+}
+
+.card-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.card-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.card-table td:first-child {
+  color: #555;
+}
+
+.card-table td:last-child {
+  font-weight: bold;
+  text-align: left;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.orange {
+  background-color: orange;
+}
+
+.green {
+  background-color: green;
+}
+
+.red {
+  background-color: red;
+}
+
+footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+@media (max-width: 600px) {
+  .card-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .card-content canvas {
+    margin: auto;
+  }
+}
+
+@media (max-width: 992px) {
+  .card-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .card canvas {
+    margin-bottom: 15px;
+  }
+}
+
+@media (min-width: 993px) {
+  .card-content {
+    flex-direction: row;
+    align-items: center;
+    text-align: right;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1920px) {
+  .container {
+    width: 80%;
+    padding: 40px;
+    margin: 40px auto;
+  }
+  .profile-pic {
+    width: 250px;
+    height: 250px;
+  }
+  .car-title {
+    font-size: 44px;
+  }
+  .car-info h2,
+  #car-name {
+    font-size: 32px;
+  }
+  .form-container {
+    gap: 40px;
+    padding: 40px;
+  }
+  .column {
+    width: 28%;
+    gap: 18px;
+  }
+  .orders-table th,
+  .orders-table td {
+    font-size: 18px;
+    padding: 16px;
+  }
+  .popup-content {
+    padding: 40px;
+    min-width: 400px;
+  }
+}

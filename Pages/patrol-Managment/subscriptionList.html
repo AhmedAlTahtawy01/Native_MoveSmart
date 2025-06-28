@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>إدارة المشتركين</title>
+    <link
+      rel="stylesheet"
+      href="../../Assets/Styles/patrol-Managment/subscriptionList.css"
+    />
+  </head>
+  <body>
+    <div class="subscription-container">
+      <div class="subscription-header">
+        <div class="subscription-actions">
+          <button id="addSubscriber">➕ إضافة مشترك</button>
+          <button id="filterBtn">🔽 فلتر</button>
+          <button id="refreshBtn">🔄 تحديث</button>
+        </div>
+        <div class="subscription-total">
+          إجمالي المشتركين <span id="totalCount">40</span>
+        </div>
+      </div>
+
+      <div id="filterMenu" class="subscription-filter-menu hidden">
+        <div onclick="toggleNameFilter()">الاسم</div>
+        <div onclick="toggleStatusFilter()">الحالة</div>
+      </div>
+
+      <div id="nameFilter" class="subscription-filter-input hidden">
+        <input type="text" id="nameInput" placeholder="أدخل الاسم" />
+        <button onclick="filterByName()">بحث</button>
+      </div>
+
+      <div id="statusFilter" class="subscription-filter-input hidden">
+        <button onclick="filterByStatus('متاحة')">متاحة</button>
+        <button onclick="filterByStatus('منتهية')">منتهية</button>
+      </div>
+
+      <table class="subscription-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>رقم الهاتف</th>
+            <th>حالة الاشتراك</th>
+            <th>اسم المشترك</th>
+          </tr>
+        </thead>
+        <tbody id="subscriberList">
+          <!-- Cards will be injected by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Popup -->
+    <div id="popup" class="subscription-popup hidden">
+      <div class="subscription-popup-content">
+        <h2>إضافة مشترك جديد</h2>
+        <div id="notification" class="subscription-notification hidden"></div>
+        <div class="subscription-form-grid">
+          <div>
+            <label for="newPhone">رقم المحمول</label>
+            <input type="text" id="newPhone" />
+          </div>
+          <div>
+            <label for="newName">الاسم</label>
+            <input type="text" id="newName" />
+          </div>
+          <div>
+            <label for="newJob">المسمى الوظيفي</label>
+            <input type="text" id="newJob" />
+          </div>
+          <div>
+            <label for="newId">الرقم القومي</label>
+            <input type="text" id="newId" />
+          </div>
+        </div>
+        <button onclick="saveNewSubscriber()">حفظ</button>
+      </div>
+    </div>
+    <script src="../../Java script/patrol-Managment/subscriptionList.js"></script>
+  </body>
+</html>

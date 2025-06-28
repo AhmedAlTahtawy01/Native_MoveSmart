@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fleet Track Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      background-color: #fff;
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .navbar input {
+      padding: 5px;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .chart-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width: 45%;
+      min-width: 300px;
+      text-align: center;
+    }
+    .chart-container h2 {
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+    canvas {
+      max-width: 100%;
+    }
+    .legend {
+      list-style: none;
+      padding: 0;
+      margin: 15px 0;
+    }
+    .legend li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .legend span {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      margin-right: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      padding: 8px;
+      text-align: right;
+    }
+    th {
+      background-color: #f0f2f5;
+    }
+    [lang="ar"] {
+      direction: rtl;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div>Sayed</div>
+    <input type="text" placeholder="Search Fleet">
+    <div>Fleet Track</div>
+  </div>
+  <div class="container">
+    <div class="chart-container" lang="ar">
+      <h2>بيانات الأسطول النشط</h2>
+      <canvas id="chart1"></canvas>
+      <ul class="legend" id="legend1"></ul>
+      <table id="table1">
+        <thead>
+          <tr>
+            <th>القيمة</th>
+            <th>التصنيف</th>
+            <th>اللون</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="chart-container" lang="ar">
+      <h2>بيانات الأسطول الآخر</h2>
+      <canvas id="chart2"></canvas>
+      <ul class="legend" id="legend2"></ul>
+      <table id="table2">
+        <thead>
+          <tr>
+            <th>القيمة</th>
+            <th>التصنيف</th>
+            <th>اللون</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    const colors = ['#007bff', '#ff9800', '#4caf50', '#f44336'];
+    const labels = ['الأسطول النشط', 'الأسطول الخامل', 'الأسطول الموقوف', 'الأسطول المهجور'];
+
+    async function fetchData() {
+      // Simulated API response; replace with actual fetch call
+      return {
+        chart1: [1256, 23, 3, 1],
+        chart2: [1256, 23, 3, 1] // Adjust if different data is expected
+      };
+    }
+
+    function formatNumber(num) {
+      return num.toString().padStart(4, '0');
+    }
+
+    function createChart(ctx, data) {
+      return new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: colors,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          cutout: '50%',
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function populateLegend(legendEl, data) {
+      legendEl.innerHTML = data.map((value, i) => `
+        <li>
+          <span style="background-color: ${colors[i]}"></span>
+          ${labels[i]}: ${formatNumber(value)}
+        </li>
+      `).join('');
+    }
+
+    function populateTable(tableEl, data) {
+      const tbody = tableEl.querySelector('tbody');
+      tbody.innerHTML = data.map((value, i) => `
+        <tr>
+          <td>${formatNumber(value)}</td>
+          <td>${labels[i]}</td>
+          <td><span style="background-color: ${colors[i]}; width: 12px; height: 12px; display: inline-block;"></span></td>
+        </tr>
+      `).join('');
+    }
+
+    async function init() {
+      const data = await fetchData();
+      const ctx1 = document.getElementById('chart1').getContext('2d');
+      const ctx2 = document.getElementById('chart2').getContext('2d');
+      createChart(ctx1, data.chart1);
+      createChart(ctx2, data.chart2);
+      populateLegend(document.getElementById('legend1'), data.chart1);
+      populateLegend(document.getElementById('legend2'), data.chart2);
+      populateTable(document.getElementById('table1'), data.chart1);
+      populateTable(document.getElementById('table2'), data.chart2);
+    }
+
+    init();
+  </script>
+</body>
+</html>

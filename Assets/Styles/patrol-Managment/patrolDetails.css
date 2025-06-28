@@ -1,0 +1,234 @@
+ .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    direction: ltr;
+  }
+  
+  /* يسار: الصورة */
+  .left-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  /* وسط: معلومات الدورية */
+  .center-section {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* خلي المسافة صغيرة */
+  }
+  
+  
+  
+  
+  .header button {
+    background: rgba(31, 31, 31, 0.87);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: #fff;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 30px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    position: absolute;
+    width: 600px;
+    height: 30px;
+    left: 42px;
+    top: 120px;
+
+  }
+  
+  
+  
+  .info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  
+  .info-box {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    min-width: 180px;
+    text-align: center;
+  }
+
+  .icon-box img {
+    width: 50px;
+    height: 50px;
+    background: #eee;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .tabs {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+  }
+  
+  .tab {
+    padding: 10px 20px;
+    border: none;
+    background: #f1f1f1;
+    cursor: pointer;
+    margin-left: 10px;
+    border-radius: 5px;
+  }
+  
+  .tab.active {
+    background: #000;
+    color: #fff;
+  }
+  
+  .tab-content {
+    display: none;
+  }
+  
+  .tab-content.show {
+    display: block;
+  }
+  
+  .form-columns {
+    display: flex;
+    gap: 30px;
+    background: #F2F2F7;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+    flex-wrap: wrap;
+  }
+  
+  .form-column {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .form-column.half {
+    flex: 0.6;
+  }
+  
+  .form-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-item label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #333;
+  }
+  
+  .form-item input {
+    background: #FFFFFF;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 14px;
+  }
+  
+  .status {
+    background: rgba(31, 255, 99, 0.19);
+    border: 2px solid #23FB55;
+    padding: 10px;
+    border-radius: 31px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  thead {
+    background: #333;
+    color: #fff;
+  }
+  
+  th, td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+  }
+  
+  td button {
+    background: rgba(149, 149, 149, 0.55);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    font-weight: bold;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  @media (min-width: 1024px) and (max-width: 1920px) {
+  .header {
+    margin-bottom: 40px;
+    gap: 40px;
+  }
+  .left-section {
+    gap: 20px;
+  }
+  .center-section {
+    gap: 20px;
+  }
+  .action-buttons {
+    width: 800px;
+    height: 40px;
+    top: 140px;
+  }
+  .info-box {
+    min-width: 220px;
+    font-size: 18px;
+  }
+  .icon-box img {
+    width: 70px;
+    height: 70px;
+  }
+  .tabs {
+    margin-bottom: 30px;
+  }
+  .tab {
+    padding: 14px 30px;
+    font-size: 18px;
+  }
+  .form-columns {
+    gap: 50px;
+    padding: 40px;
+  }
+  .form-column {
+    min-width: 300px;
+    gap: 25px;
+  }
+  .form-item input {
+    padding: 16px;
+    font-size: 18px;
+  }
+  th, td {
+    padding: 18px;
+    font-size: 18px;
+  }
+}

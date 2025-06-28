@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../Assets/Styles/sharedLayout.css" />
+    <link rel="stylesheet" href="../Assets/Styles/dashboards.css" />
+    <link rel="stylesheet" href="../Assets/Styles/dash-Boards/administrativeSupervisorDashboard.css" />
+    <title>Dashboard - Move Smart</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../Assets/Images/favicon_io/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../Assets/Images/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../Assets/Images/favicon_io/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="../Assets/Images/favicon_io/apple-touch-icon.png">
+    
+
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <h1 class="dashboard-title">لوحة التحكم الرئيسية</h1>
+        <div class="dashboard-grid">
+            <!-- كارت السائقين -->
+            <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>نظرة عامة على السائقين</h2>
+                <div class="card-content">
+                    <div class="chart-wrapper">
+                        <canvas id="driverChart"></canvas>
+                    </div>
+                    <div class="card-details">
+                        <table class="card-table">
+                            <tr>
+                                <td>إجمالي السائقين</td>
+                                <td id="total-drivers"></td>
+                            </tr>
+                            <tr>
+                                <td>أمر شغل <span class="dot orange"></span></td>
+                                <td id="working-drivers"></td>
+                            </tr>
+                            <tr>
+                                <td>متاح <span class="dot green"></span></td>
+                                <td id="available-drivers"></td>
+                            </tr>
+                            <tr>
+                                <td>إجازة <span class="dot red"></span></td>
+                                <td id="onleave-drivers"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- كارت السيارات -->
+            <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>نظرة عامة على السيارات</h2>
+                <div class="card-content">
+                    <div class="chart-wrapper">
+                        <canvas id="carChart"></canvas>
+                    </div>
+                    <div class="card-details">
+                        <table class="card-table">
+                            <tr>
+                                <td>إجمالي السيارات</td>
+                                <td id="total-cars"></td>
+                            </tr>
+                            <tr>
+                                <td>طور الصيانة <span class="dot orange"></span></td>
+                                <td id="cars-maintenance"></td>
+                            </tr>
+                            <tr>
+                                <td>متاح <span class="dot green"></span></td>
+                                <td id="cars-available"></td>
+                            </tr>
+                            <tr>
+                                <td>أمر شغل <span class="dot red"></span></td>
+                                <td id="cars-working"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- كارت الطلبات -->
+            <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>الطلبات</h2>
+                <div class="card-content">
+                    <div class="chart-wrapper">
+                        <canvas id="orderChart"></canvas>
+                    </div>
+                    <div class="card-details">
+                        <table class="card-table">
+                            <tr>
+                                <td>إجمالي الطلبات</td>
+                                <td id="total-orders"></td>
+                            </tr>
+                            <tr>
+                                <td>انتظار <span class="dot orange"></span></td>
+                                <td id="orders-pending"></td>
+                            </tr>
+                            <tr>
+                                <td>موافقة <span class="dot green"></span></td>
+                                <td id="orders-approved"></td>
+                            </tr>
+                            <tr>
+                                <td>مرفوض <span class="dot red"></span></td>
+                                <td id="orders-rejected"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- كارت المستهلكات -->
+            <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>المستهلكات</h2>
+                <div class="card-content">
+                    <div class="chart-wrapper">
+                        <canvas id="consumableChart"></canvas>
+                    </div>
+                    <div class="card-details">
+                        <table class="card-table">
+                            <tr>
+                                <td>إجمالي المستهلكات</td>
+                                <td id="total-consumables"></td>
+                            </tr>
+                            <tr>
+                                <td>متوفر <span class="dot green"></span></td>
+                                <td id="consumables-available"></td>
+                            </tr>
+                            <tr>
+                                <td>مستهلك <span class="dot red"></span></td>
+                                <td id="consumables-used"></td>
+                            </tr>
+                            <tr>
+                                <td>في الطلب <span class="dot orange"></span></td>
+                                <td id="consumables-inorder"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- كارت قطع الغيار -->
+            <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>قطع الغيار</h2>
+                <div class="card-content">
+                    <div class="chart-wrapper">
+                        <canvas id="sparePartChart"></canvas>
+                    </div>
+                    <div class="card-details">
+                        <table class="card-table">
+                            <tr>
+                                <td>إجمالي قطع الغيار</td>
+                                <td id="total-spareParts"></td>
+                            </tr>
+                            <tr>
+                                <td>متوفر <span class="dot green"></span></td>
+                                <td id="spareParts-available"></td>
+                            </tr>
+                            <tr>
+                                <td>مستهلك <span class="dot red"></span></td>
+                                <td id="spareParts-used"></td>
+                            </tr>
+                            <tr>
+                                <td>في الطلب <span class="dot orange"></span></td>
+                                <td id="spareParts-inorder"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- كارد الدوريات -->
+            <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>نظرة عامة على الدوريات</h2>
+                <div class="card-content">
+                <div class="chart-wrapper">
+                    <canvas id="patrolChart"></canvas>
+                </div>
+                <div class="card-details">
+                    <table class="card-table">
+                    <tr>
+                        <td>إجمالي الدوريات</td>
+                        <td id="total-patrol"></td>
+                    </tr>
+                    <tr>
+                        <td>قيد التنفيذ<span class="dot orange"></span></td>
+                        <td id="working-patrol"></td>
+                    </tr>
+                    <tr>
+                        <td>قادمة <span class="dot green"></span></td>
+                        <td id="available-patrol"></td>
+                    </tr>
+                    <tr>
+                        <td>منتهية <span class="dot red"></span></td>
+                        <td id="onleave-patrol"></td>
+                    </tr>
+                    </table>
+                </div>
+                </div>
+            </div>
+
+            <!-- كارد الاشتراكات -->
+            <div class="card">
+                <span class="edit-icon">✏️</span>
+                <h2>الاشتراكات</h2>
+                <div class="card-content">
+                <div class="chart-wrapper">
+                    <canvas id="subscriptionChart"></canvas>
+                </div>
+                <div class="card-details">
+                    <table class="card-table">
+                    <tr>
+                        <td>إجمالي الاشتراكات</td>
+                        <td id="total-subscriptions"></td>
+                    </tr>
+                    <tr>
+                        <td>نشطة<span class="dot green"></span></td>
+                        <td id="active-subscriptions"></td>
+                    </tr>
+                    <tr>
+                        <td>منتهية<span class="dot red"></span></td>
+                        <td id="expired-subscriptions"></td>
+                    </tr>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../Java script/dashboards.js"></script>
+</body>
+</html>

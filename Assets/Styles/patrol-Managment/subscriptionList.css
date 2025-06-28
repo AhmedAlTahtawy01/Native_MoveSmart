@@ -1,0 +1,207 @@
+.subscription-container {
+  max-width: 900px;
+  margin: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.subscription-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.subscription-actions button {
+  margin-left: 10px;
+  padding: 8px 12px;
+  border: none;
+  background: #e5e5e5;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.subscription-actions button:hover {
+  background: #ccc;
+}
+
+#addSubscriber {
+  background: #000;
+  color: white;
+}
+
+.subscription-total {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.subscription-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.subscription-table thead {
+  background: black;
+  color: white;
+}
+
+.subscription-table td,
+.subscription-table th {
+  padding: 12px;
+  text-align: center;
+}
+
+.subscription-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.status-active {
+  background: rgba(31, 255, 99, 0.19);
+  border: 2px solid #23fb55;
+  padding: 5px 10px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.subscription-filter-menu {
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  width: 150px;
+  background: #fff;
+  box-shadow: 0 0 5px #ccc;
+  border-radius: 5px;
+}
+
+.subscription-filter-menu div {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.subscription-filter-input {
+  margin-top: 10px;
+}
+
+.subscription-filter-input input {
+  padding: 6px;
+  width: 200px;
+}
+
+.subscription-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subscription-popup-content {
+  background: #1a1a1a;
+  padding: 40px;
+  border-radius: 10px;
+  color: white;
+  width: 600px;
+  text-align: center;
+}
+
+.subscription-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 40px;
+  row-gap: 25px;
+  margin: 30px 0;
+}
+
+.subscription-form-grid label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  text-align: right;
+}
+
+.subscription-popup input {
+  background: #2c2c2c;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  color: white;
+}
+
+.subscription-popup button {
+  padding: 10px 20px;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.subscription-popup button:hover {
+  background: #666;
+}
+
+.subscription-notification {
+  background-color: #ffdddd;
+  color: #a94442;
+  border: 1px solid #a94442;
+  padding: 10px;
+  margin: 15px 0;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.input-error {
+  border: 2px solid red !important;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (min-width: 1024px) and (max-width: 1920px) {
+  .container {
+    width: 90%;
+    padding: 16px;
+    margin: 16px auto;
+  }
+  .header {
+    flex-direction: row;
+    gap: 16px;
+    padding: 12px;
+  }
+  .content {
+    flex-direction: row;
+    gap: 16px;
+  }
+  .parts-list {
+    width: 28%;
+    padding: 8px;
+  }
+  .cards-container {
+    width: 72%;
+    gap: 12px;
+  }
+  .card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+  .popup-content {
+    min-width: 350px;
+    padding: 16px;
+  }
+  .card-buttons {
+    gap: 8px;
+  }
+  .actions {
+    gap: 8px;
+  }
+}

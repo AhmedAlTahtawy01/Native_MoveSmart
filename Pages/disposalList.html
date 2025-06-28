@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المستهلكات</title>
+  <link rel="stylesheet" href="../../Assets/Styles/disposalList.css" />
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="page-title">المستهلكات</h1>
+
+    <div class="header">
+      <h2>إجمالي المستهلكات <span id="total">0</span></h2>
+      <div class="actions">
+        <button id="addBtn" onclick="openPop()">➕ إضافة</button>
+        <button id="refreshBtn">🔄 تحديث</button>
+        <input type="text" id="search" placeholder="بحث..." />
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="consumables-list">
+        <ul id="consumables"></ul>
+      </div>
+
+      <div class="cards-container" id="consumablesCards"></div>
+    </div>
+
+    <!-- Popup -->
+    <div id="addPartPopup" class="popup hidden">
+      <div class="popup-content">
+        <h3>إضافة / تعديل قطعة</h3>
+        <label>اسم القطعة:</label>
+        <input type="text" id="newconsumableName" />
+        <!-- <label>نوع السيارة:</label>
+          <input type="text" id="newCarType" />
+          <label>الكود:</label> -->
+        <!-- <input type="text" id="newCode" /> -->
+        <label>الكمية:</label>
+        <input type="number" id="newQuantity" />
+        <label>العمر الافتراضي (يوم):</label>
+        <input type="number" id="newLifetime" />
+        <!-- <label>التكلفة:</label>
+          <input type="number" id="newCost" /> -->
+
+        <div class="popup-buttons">
+          <button id="addBtnSubmit" onclick="addItem()">➕ إضافة</button>
+          <button id="editBtnSubmit" onclick="updatePart()" class="hidden">
+            ✏️ تعديل
+          </button>
+          <button onclick="closePop()">إلغاء</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

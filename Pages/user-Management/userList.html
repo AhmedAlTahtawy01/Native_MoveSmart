@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Assets/Styles/sharedLayout.css">
+    <link rel="stylesheet" href="../../Assets/Styles/userList.css">
+    <link rel="icon" type="image/x-icon" href="../../Assets/Images/logo.png">
+    <title>User Management - Move Smart</title>
+</head>
+<body>
+    <div class="topbar">
+        <div class="profile">
+            <span id="userName">Loading...</span>
+            <img class="user-icon" src="../../Assets/Images/users.svg" alt="User" />
+            <button id="logoutButton" class="logout-button">
+                <img src="../../Assets/Images/logout.svg" alt="Logout" />
+            </button>
+        </div>
+        <button class="notification"><img src="../../Assets/Images/bell.svg" alt="Notifications" /></button>
+        <div class="search-container">
+            <input type="text" placeholder="بحث بالاسم أو الرقم الوطني..." id="searchInput" />
+            <img src="../../Assets/Images/search.svg" alt="Search" />
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="page-header">
+            <h1>إدارة المستخدمين</h1>
+            <button class="back-button" onclick="goBack()">
+                <img src="../../Assets/Images/arrow-left.svg" alt="Back" />
+                العودة للوحة التحكم
+            </button>
+        </div>
+
+        <div class="user-management-container">
+            <div class="actions-bar">
+                <button class="add-user-btn" onclick="openAddUserModal()">
+                    <img src="../../Assets/Images/plus.svg" alt="Add" />
+                    إضافة مستخدم جديد
+                </button>
+                <div class="filters">
+                    <select id="roleFilter" onchange="filterUsers()">
+                        <option value="">جميع الأدوار</option>
+                        <option value="0">المشرف الرئيسي</option>
+                        <option value="1">مدير المستشفى</option>
+                        <option value="2">المدير العام</option>
+                        <option value="3">المشرف العام</option>
+                        <option value="4">مشرف الدوريات</option>
+                        <option value="5">مشرف الورشة</option>
+                        <option value="6">المشرف الإداري</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="users-table-container">
+                <table class="users-table" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>اسم المستخدم</th>
+                            <th>الرقم الوطني</th>
+                            <th>الدور</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Users will be populated here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">إضافة مستخدم جديد</h3>
+                <button class="close-modal" onclick="closeUserModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <div class="form-group">
+                        <label for="username">اسم المستخدم</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nationalNo">الرقم الوطني</label>
+                        <input type="text" id="nationalNo" name="nationalNo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">كلمة المرور</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="role">الدور</label>
+                        <select id="role" name="role" required>
+                            <option value="">اختر الدور</option>
+                            <option value="0">المشرف الرئيسي</option>
+                            <option value="1">مدير المستشفى</option>
+                            <option value="2">المدير العام</option>
+                            <option value="3">المشرف العام</option>
+                            <option value="4">مشرف الدوريات</option>
+                            <option value="5">مشرف الورشة</option>
+                            <option value="6">المشرف الإداري</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeUserModal()">إلغاء</button>
+                <button type="submit" class="btn-save" onclick="saveUser()" id="saveButton">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal small-modal">
+            <div class="modal-header">
+                <h3>تأكيد الحذف</h3>
+                <button class="close-modal" onclick="closeDeleteModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p>هل أنت متأكد من حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeDeleteModal()">إلغاء</button>
+                <button type="button" class="btn-delete" onclick="confirmDeleteUser()" id="confirmDeleteButton">حذف</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../Java script/dashboards.js"></script>
+    <script src="../../Java script/user-Management/userList.js"></script>
+</body>
+</html>

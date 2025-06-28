@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إدارة الدوريات</title>
+  <link rel="stylesheet" href="../../Assets/Styles/car-Managment/carList.css" />
+</head>
+
+<body>
+  <div class="container">
+    <h2>الدوريات</h2>
+    <p class="total-patrols">
+      إجمالي الدوريات: <span id="total-count">0</span>
+    </p>
+
+    <div class="actions">
+      <input
+        type="text"
+        id="search"
+        placeholder="بحث..."
+        oninput="searchPatrols()"
+      />
+      <select id="filter-select" onchange="filterPatrols()">
+        <option value="all">الجميع</option>
+        <option value="active">قيد التنفيذ</option>
+        <option value="ended">منتهية</option>
+      </select>
+
+      <button onclick="openAddPatrolPop()">+ إضافة دورية</button>
+      <button onclick="refreshData()">🔄 تحديث</button>
+    </div>
+
+    <div class="table-header">
+      <span>رقم الدورية</span>
+      <span>وقت البدء</span>
+      <span>رقم السيارة</span>
+      <span>الأماكن المتاحة</span>
+      <span>حالة السيارة</span>
+      <span>حالة السائق</span>
+    </div>
+
+    <div id="patrols-container" class="cards-container"></div>
+  </div>
+
+  <!-- popup -->
+  <div id="add-pop" class="pop hidden">
+    <div class="pop-content">
+      <h3>إضافة دورية جديدة</h3>
+      <input type="text" id="patrol-description" placeholder="الوصف" />
+      <input type="time" id="patrol-moving-time" placeholder="وقت التحرك" />
+      <input
+        type="number"
+        id="patrol-approx-time"
+        placeholder="المدة المتوقعة (دقائق)"
+      />
+
+      <select id="bus-select">
+        <option value="">-- اختر الباص --</option>
+      </select>
+      <div class="modal-actions">
+        <button onclick="submitNewPatrol()">حفظ</button>
+        <button onclick="closeAddPatrolPop()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../Java script/patrol-Managment/patrolList.js"></script>
+</body>
+</html>

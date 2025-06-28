@@ -1,0 +1,110 @@
+/* Additional responsive styles */
+/* Default state - hide menu toggle on larger screens */
+.menu-toggle {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .topbar {
+    width: 100%;
+    justify-content: space-between;
+    padding: 8px;
+  }
+
+  .profile {
+    margin-right: 0;
+  }
+
+  .search-container {
+    width: 40%;
+  }
+
+  .sidebar {
+    transform: translateX(100%);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .content {
+    margin-right: 0;
+    transition: margin-right 0.3s ease;
+  }
+
+  .menu-toggle {
+    display: block;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1001;
+    background: #f9f9f9;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 30px;
+    height: 30px;
+  }
+
+  .menu-toggle img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .dashboard-stats {
+    flex-direction: column;
+  }
+
+  .chart-container {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 8px 5px;
+  }
+
+  .search-container {
+    width: 100%;
+    order: 3;
+    margin-top: 8px;
+  }
+
+  .profile {
+    order: 1;
+  }
+
+  .notification {
+    order: 2;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1920px) {
+  .topbar {
+    width: 98%;
+    padding: 18px 32px;
+  }
+  .profile {
+    margin-right: 10%;
+  }
+  .search-container {
+    width: 350px;
+  }
+  .dashboard-stats {
+    flex-direction: row;
+    gap: 32px;
+  }
+  .chart-container {
+    width: 60%;
+    margin: 0 auto;
+  }
+}

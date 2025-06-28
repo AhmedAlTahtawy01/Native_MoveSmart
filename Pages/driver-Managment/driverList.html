@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إدارة السائقين</title>
+  <link rel="stylesheet" href="../../Assets/Styles/driver-Managment/driverList.css" />
+</head>
+
+<body>
+  <div class="container">
+    <h2>السائقين</h2>
+    <p class="total-driver">
+      إجمالي السائقين: <span id="total-count">0</span>
+    </p>
+
+    <div class="actions">
+      <input type="text" id="search" placeholder="بحث..." onkeyup="searchDriver()" />
+      <select id="filter-select" onchange="filterDriver()">
+        <option value="all" selected>الجميع</option>
+        <option value="1">متاح</option>
+        <option value="2">غائب</option>
+        <option value="3">قيد العمل</option>
+      </select>
+
+      <button onclick="openPop()">+ إضافة سائق</button>
+      <button onclick="loadDriver()">🔄 تحديث</button>
+    </div>
+
+    <div class="table-header">
+      <span>اسم السائق</span>
+      <span>الحالة</span>
+      <span>رقم الهاتف</span>
+      <span>رقم السيارة</span>
+    </div>
+
+    <div id="driver-container" class="cards-container"></div>
+  </div>
+  <!-- popup modal -->
+  <div id="add-pop" class="pop hidden">
+    <div class="pop-content">
+      <div id="success-message" class="success-message hidden"> تم الحفظ بنجاح</div>
+      <h3>إضافة سائق جديد</h3>
+
+      <input type="text" id="driver-name" placeholder="اسم السائق" />
+      <small id="error-driver-name" class="error"></small>
+
+      <input type="text" id="nationalNum" placeholder="الرقم القومي" />
+      <small id="error-nationalNum" class="error"></small>
+
+      <select id="driver-status">
+        <option value="">-- اختر الحالة --</option>
+        <option value="متاح">متاح</option>
+        <option value="غائب">غائب</option>
+        <option value="قيد العمل">قيد العمل</option>
+      </select>
+      <small id="error-driver-status" class="error"></small>
+
+      <input type="text" id="driver-phone" placeholder="رقم الهاتف" />
+      <small id="error-driver-phone" class="error"></small>
+
+      <select id="vehicleID">
+        <option value="">-- اختر السيارة --</option>
+      </select>
+      <small id="error-vehicleID" class="error"></small>
+
+      <div class="pop-actions">
+        <button onclick="submitDriver()">حفظ</button>
+        <button onclick="closePop()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+<script src="../../Java script/driver-Managment/driverList.js"></script>
+</body>
+
+</html>

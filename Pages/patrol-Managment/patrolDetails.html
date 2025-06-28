@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نظام الدورية</title>
+  <link rel="stylesheet" href="../../Assets/Styles/patrol-Managment/patrolDetails.css">
+</head>
+<body>
+  <div class="header">
+    <!-- Right: أزرار رجوع وطباعة وتقرير -->
+    <div class="left-section">
+      <button onclick="goBack()">← رجوع</button>
+      <div class="action-buttons">
+        <button style="background: #F2F2F7; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); color: black; width: 200px; height: 30px;" class="doc" onclick="generateReport()">📄 تقرير</button>
+        <button style="background: #080808; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); width: 200px; height: 30px;" class="print" onclick="printPage()">🖨️ طباعة</button>
+      </div>
+    </div>
+  
+    <!-- Center: معلومات ← صورة -->
+    <div class="center-section">
+      <div class="info-group">
+        <div class="info-box">إجمالى الكيلومترات: <span>210350</span></div>
+        <div class="info-box">اجمالي الوقود المستخدم: <span>2051.03</span></div>
+      </div>
+      <div class="icon-box">
+        <img src="../../Assets/Images/car-Avt.png" alt="car" />
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('patrol')">معلومات الدورية</button>
+    <button class="tab" onclick="switchTab('subscribers')">المشتركين</button>
+  </div>
+
+  <div id="patrol" class="tab-content show">
+    <div class="form-columns">
+
+      <!-- العمود 1 -->
+      <div class="form-column">
+        <div class="form-item">
+          <label>رقم الدورية</label>
+          <input type="text" id="patrol-id" readonly />
+        </div>
+        <div class="form-item">
+          <label>الوصف</label>
+          <input type="text" id="patrol-desc" readonly />
+        </div>
+        <div class="form-item">
+          <label>وقت التحرك</label>
+          <input type="text" id="patrol-moving" readonly />
+        </div>
+        <div class="form-item">
+          <label>المدة المتوقعة (دقائق)</label>
+          <input type="text" id="patrol-duration" readonly />
+        </div>
+      </div>
+
+      <!-- العمود 2 -->
+      <div class="form-column">
+        <div class="form-item">
+          <label>رقم السيارة</label>
+          <input type="text" id="vehicle-plate" readonly />
+        </div>
+        <div class="form-item">
+          <label>الماركة</label>
+          <input type="text" id="vehicle-brand" readonly />
+        </div>
+        <div class="form-item">
+          <label>الموديل</label>
+          <input type="text" id="vehicle-model" readonly />
+        </div>
+        <div class="form-item">
+          <label>حالة السيارة</label>
+          <input type="text" id="vehicle-status" readonly />
+        </div>
+      </div>
+
+      <!-- نصف عمود -->
+      <div class="form-column half">
+        <div class="form-item">
+          <label>اسم السائق</label>
+          <input type="text" id="driver-name" readonly />
+        </div>
+        <div class="form-item">
+          <label>جوال السائق</label>
+          <input type="text" id="driver-phone" readonly />
+        </div>
+        <div class="form-item">
+          <label>الأماكن المتاحة</label>
+          <input type="text" id="bus-available" readonly />
+        </div>
+        <div class="form-item">
+          <label>إجمالي المقاعد</label>
+          <input type="text" id="bus-seats" readonly />
+        </div>
+      </div>
+
+    </div>
+  </div>
+  
+  
+
+  <div id="subscribers" class="tab-content">
+    <table>
+      <thead>
+        <tr>
+          <th>اسم الموظف</th>
+          <th>الوظيفة</th>
+          <th>رقم الهاتف</th>
+          <th>عرض التفاصيل</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- كرر هذا الصف حسب الحاجة -->
+        <tr>
+          <td>الاسم</td>
+          <td>الوظيفة</td>
+          <td>0123605063</td>
+          <td><button>عرض التفاصيل</button></td>
+        </tr>
+        <tr>
+          <td>الاسم</td>
+          <td>الوظيفة</td>
+          <td>0123605063</td>
+          <td><button>عرض التفاصيل</button></td>
+        </tr>
+        <tr>
+          <td>الاسم</td>
+          <td>الوظيفة</td>
+          <td>0123605063</td>
+          <td><button>عرض التفاصيل</button></td>
+        </tr>
+        <tr>
+          <td>الاسم</td>
+          <td>الوظيفة</td>
+          <td>0123605063</td>
+          <td><button>عرض التفاصيل</button></td>
+        </tr>
+        <!-- نهاية التكرار -->
+      </tbody>
+    </table>
+  </div>
+
+  <script src="../../Java script/patrol-Managment/patrolDetails.js"></script>
+</body>
+</html>

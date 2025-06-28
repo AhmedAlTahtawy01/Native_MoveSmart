@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إدارة السائقين</title>
+  <link rel="stylesheet" href="../../Assets/Styles/driver-Managment/driverDetails.css" />
+</head>
+
+<body>
+  <div class="container">
+    <!-- القسم العلوي -->
+    <div class="top-section">
+      <div class="driver-container">
+        <h2 class="driver-title">إدارة السائقين</h2>
+        <div class="driver-info">
+          <img src="../../Assets/Images/driver-Avt.png" alt="صورة السائق" class="profile-pic" />
+          <div class="driver-details-container">
+            <h2 id="driver-name">اسم السائق</h2>
+            <p id="driver-phone" class="driver-details">
+              رقم الهاتف: غير متوفر
+            </p>
+            <p id="driver-status" class="driver-details">الحالة: غير متوفر</p>
+            <p id="driver-national-id" class="driver-details">
+              الرقم القومي: غير متوفر
+            </p>
+            <!-- ✅ تم إضافته -->
+          </div>
+        </div>
+      </div>
+
+      <div class="left-side">
+        <button class="back-btn">⬅ رجوع</button>
+        <div class="actions">
+          <!-- <button class="print-btn">🖨 طباعة</button>
+            <button class="report-btn">📄 تقرير</button> -->
+          <button class="delete-btn">🗑 حذف</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs-container">
+      <div class="tabs">
+        <button class="tab active" data-tab="driver-info">
+          معلومات السائق
+        </button>
+        <button class="tab" data-tab="work-history">سجل أوامر الشغل</button>
+        <button class="tab" data-tab="vacation-record">سجل الإجازات</button>
+      </div>
+      <button class="save-btn">✅ حفظ</button>
+      <button class="add-vacation-btn">➕ إضافة إجازة</button>
+    </div>
+
+    <!-- معلومات السائق -->
+    <div class="tab-content" id="driver-info">
+      <div class="form-container">
+        <div class="input-group">
+          <label>الاسم :</label>
+          <input type="text" name="name" placeholder="أدخل الاسم" />
+        </div>
+        <div class="input-group">
+          <label>رقم السيارة:</label>
+          <input type="text" name="vehicleID" placeholder="أدخل رقم السيارة" />
+        </div>
+
+        <div class="input-group">
+          <label>رقم الهاتف:</label>
+          <input type="text" name="phone" placeholder="أدخل رقم الهاتف" />
+        </div>
+        <div class="input-group">
+          <label>الرقم القومي:</label>
+          <input type="text" name="nationalNum" placeholder="أدخل الرقم القومي" />
+        </div>
+        <div class="input-group">
+          <label>الحالة:</label>
+          <input type="text" name="status" placeholder="أدخل الحالة" />
+        </div>
+      </div>
+    </div>
+
+    <!-- سجل أوامر الشغل -->
+    <div class="tab-content" id="work-history" style="display: none">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>السيارة</th>
+            <th>التاريخ</th>
+            <th>الوقت</th>
+            <th>الرحلة</th>
+            <th>KM/المسافة</th>
+            <th>رقم أمر الشغل</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- سجل الإجازات -->
+    <div class="tab-content" id="vacation-record" style="display: none">
+      <div class="vacation-header">
+        <table class="vacation-table">
+          <thead>
+            <tr>
+              <th>من</th>
+              <th>إلى</th>
+              <th>الفترة بالأيام</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="vacation-content">
+        <!-- JavaScript will inject content here -->
+      </div>
+    </div>
+
+    <!-- نافذة إدخال الإجازة -->
+    <!-- نافذة إدخال الإجازة -->
+    <div id="leave-modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h3>إضافة إجازة جديدة</h3>
+        <label>من: <input type="date" id="leave-from" /></label>
+        <label>إلى: <input type="date" id="leave-to" /></label>
+        <label>سائق بديل:
+          <select id="substitute-driver">
+            <option value="">اختر سائق بديل</option>
+          </select>
+        </label>
+        <button id="save-leave-btn">حفظ الإجازة</button>
+      </div>
+    </div>
+  </div>
+  <script src="../../Java script/driver-Managment/driverDetails.js"></script>
+</body>
+
+</html>

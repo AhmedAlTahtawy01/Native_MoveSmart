@@ -1,0 +1,51 @@
+.chart-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 45%;
+    min-width: 300px;
+    text-align: center;
+    margin: 10px;
+}
+
+.dashboard-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.legend {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.legend li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.legend span {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: right;
+}
+
+th {
+    background-color: #f0f2f5;
+} 
