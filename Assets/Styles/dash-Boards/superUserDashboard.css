@@ -91,17 +91,17 @@ body {
 .content h2 {
     font-size: 2em;
     color: #2c3e50;
-    margin: 30px 20px;
+    margin: 20px 16px;
     font-weight: 600;
 }
 
 /* Dashboard Cards Styles */
 .dashboard-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 24px;
-    margin: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 16px;
+    margin: 16px;
     width: 100%;
 }
 
@@ -234,6 +234,93 @@ footer {
     border-top: 1px solid #eee;
 }
 
+/* Logout Confirmation Popup Styles */
+.logout-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.logout-popup.show {
+    display: flex;
+}
+
+.logout-popup-content {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px 28px 24px 28px;
+    max-width: 360px;
+    width: 90vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    text-align: center;
+    animation: fadeIn 0.25s ease;
+}
+
+.logout-popup-header h3 {
+    margin: 0 0 18px 0;
+    color: #2c3e50;
+    font-size: 1.25em;
+    font-weight: 700;
+}
+
+.logout-popup-body p {
+    margin: 0 0 22px 0;
+    color: #555;
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+.logout-popup-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.logout-popup-footer .btn-confirm {
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    transition: background 0.2s;
+}
+
+.logout-popup-footer .btn-confirm:hover {
+    background: #b91c1c;
+}
+
+.logout-popup-footer .btn-cancel {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    transition: background 0.2s;
+}
+
+.logout-popup-footer .btn-cancel:hover {
+    background: #e2e8f0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
 /* Responsive Styles */
 @media screen and (max-width: 1200px) {
     .dashboard-cards {
@@ -355,7 +442,7 @@ footer {
 /* Large Screen Optimizations */
 @media (min-width: 1024px) and (max-width: 1920px) {
     .dashboard-cards {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 32px;
         padding: 32px;
         margin: 32px;

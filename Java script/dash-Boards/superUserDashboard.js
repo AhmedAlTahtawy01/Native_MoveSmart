@@ -59,7 +59,7 @@
         // Logout button
         const logoutButton = document.getElementById('logoutButton');
         if (logoutButton) {
-            logoutButton.addEventListener('click', handleLogout);
+            logoutButton.addEventListener('click', showLogoutPopup);
         }
 
         // Search functionality
@@ -246,19 +246,50 @@
         });
     }
 
-    // Logout functionality
-    function handleLogout() {
-        if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
-            // Clear authentication data
-            localStorage.removeItem('token');
-            localStorage.removeItem('userName');
-            localStorage.removeItem('userRole');
-            localStorage.removeItem('payload');
-
-            // Redirect to login page
-            window.location.href = '../Login.html';
+    // Logout Functions
+    function showLogoutPopup() {
+        const popup = document.getElementById("logoutPopup");
+        if (popup) {
+            popup.style.display = "flex";
         }
     }
+
+    function hideLogoutPopup() {
+        const popup = document.getElementById("logoutPopup");
+        if (popup) {
+            popup.style.display = "none";
+        }
+    }
+
+    function logout() {
+        // Clear local storage
+        localStorage.removeItem('token');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userRole');
+        
+        // Redirect to login page
+        window.location.href = '../Login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', showLogoutPopup);
+        }
+        const confirmLogoutBtn = document.getElementById('confirmLogout');
+        const cancelLogoutBtn = document.getElementById('cancelLogout');
+        if (confirmLogoutBtn) {
+            confirmLogoutBtn.addEventListener('click', function () {
+                hideLogoutPopup();
+                logout();
+            });
+        }
+        if (cancelLogoutBtn) {
+            cancelLogoutBtn.addEventListener('click', function () {
+                hideLogoutPopup();
+            });
+        }
+    });
 
     // Notification system
     function showNotification(message, type = 'info') {
