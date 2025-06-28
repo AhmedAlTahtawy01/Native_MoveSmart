@@ -40,15 +40,15 @@ document.addEventListener("DOMContentLoaded", function () {
   const sidebarItems = document.querySelectorAll(".menu li");
 
   if (userRole) {
-    const homeTab = sidebarItems[0]; 
-    const carsTab = sidebarItems[1]; 
-    const driversTab = sidebarItems[2]; 
-    const employeesTab = sidebarItems[3]; 
-    const ordersTab = sidebarItems[4]; 
-    const patrolsTab = sidebarItems[5]; 
-    const subscriptionsTab = sidebarItems[6]; 
+    const homeTab = sidebarItems[0];
+    const carsTab = sidebarItems[1];
+    const driversTab = sidebarItems[2];
+    const employeesTab = sidebarItems[3];
+    const ordersTab = sidebarItems[4];
+    const patrolsTab = sidebarItems[5];
+    const subscriptionsTab = sidebarItems[6];
     const consumablesTab = sidebarItems[7];
-    const sparePartsTab = sidebarItems[8]; 
+    const sparePartsTab = sidebarItems[8];
 
     function hideTabs(...tabs) {
       tabs.forEach(tab => {
@@ -58,13 +58,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (userRole === "admin") {
       // كل التابات متاحة
-    } else if (userRole === "generalSupervisor") {
+    } 
+    else if (userRole === "generalSupervisor") {
       hideTabs(carsTab, driversTab, patrolsTab, subscriptionsTab, employeesTab);
-    } else if (userRole === "generalManager") {
+    } 
+    else if (userRole === "generalManager") {
       hideTabs(carsTab, driversTab, patrolsTab, subscriptionsTab, consumablesTab, sparePartsTab, employeesTab);
-    } else if (userRole === "patrolSupervisor") {
+    } 
+    else if (userRole === "patrolSupervisor") {
       hideTabs(carsTab, driversTab, ordersTab, consumablesTab, sparePartsTab, employeesTab);
-    } else if (userRole === "workshopSupervisor") {
+    } 
+    else if (userRole === "workshopSupervisor") {
       hideTabs(carsTab, driversTab, patrolsTab, subscriptionsTab, employeesTab);
     }
   }
@@ -99,6 +103,72 @@ document.addEventListener("DOMContentLoaded", function () {
   loadDashboardContent();
 });
 
+// Function to load dashboard content
+
+function loadDashboardContent() {
+  const content = document.getElementById("content");
+
+  const pagePath = "dashboard.html";
+  const scriptPath = "../Java script/dashboards.js";
+
+  fetch(pagePath)
+    .then((res) => res.text())
+    .then((html) => {
+
+      // Extract only the body content, not the entire HTML
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+
+      // Get the body content
+      const bodyContent = tempDiv.querySelector('body');
+      if (bodyContent) {
+        content.innerHTML = bodyContent.innerHTML;
+      } else {
+        content.innerHTML = html;
+      }
+
+      // Load the script if specified
+      if (scriptPath) {
+
+        // Remove existing script with the same path
+        const existingScript = document.querySelector(
+          `script[src="${scriptPath}"]`
+        );
+
+        if (existingScript) {
+          existingScript.remove();
+        }
+        // Clean up global variables that might cause redeclaration issues
+        cleanupGlobalVariables();
+
+        const script = document.createElement("script");
+
+        script.src = scriptPath;
+        script.defer = true;
+
+        // Add error handling for script loading
+        script.onerror = function () {
+          console.error(`Failed to load script: ${scriptPath}`);
+        };
+
+        // Add onload handler for dashboard script
+        script.onload = function () {
+          console.log('Dashboard script loaded successfully');
+
+          // Force initialization if the function exists
+          if (typeof initializeDashboard === 'function') {
+            initializeDashboard();
+          }
+        };
+        document.body.appendChild(script);
+      }
+    })
+    .catch((err) => {
+      content.innerHTML = "<p>حدث خطأ أثناء تحميل الصفحة.</p>";
+      console.error(err);
+    });
+}
+
 function showLogoutPopup() {
   const popup = document.getElementById("logoutPopup");
   if (popup) popup.classList.add("show");
@@ -121,38 +191,102 @@ function logout() {
   window.location.href = "Login.html";
 }
 
-function loadDashboardContent() {
+function changeContent(page) {
+
   const content = document.getElementById("content");
-  const pagePath = "dashboard.html";
-  const scriptPath = "../Java script/dashboards.js";
+  let pagePath = "";
+  let scriptPath = "";
+
+  switch (page) {
+    case "home":
+      pagePath = `dashboard.html`;
+      scriptPath = "../Java script/dashboards.js";
+      break;
+
+    case "cars":
+      pagePath = "car-Managment/carList.html";
+      scriptPath = "../../Java script/car-Managment/carList.js";
+      break;
+
+    case "drivers":
+      pagePath = "driver-Managment/driverList.html";
+      scriptPath = "../../Java script/driver-Managment/driverList.js";
+      break;
+
+    case "orders":
+      pagePath = "orderList.html";
+      scriptPath = "../../Java script/orderList.js";
+      break;
+
+    case "consumables":
+      pagePath = "disposalList.html";
+      scriptPath = "../../Java script/disposalList.js";
+      break;
+
+    case "spareParts":
+      pagePath = "sparePartsList.html";
+      scriptPath = "../../Java script/sparePartsList.js";
+      break;
+
+    case "patrols":
+      pagePath = "patrol-Managment/patrolList.html";
+      scriptPath = "../../Java script/patrol-Managment/patrolList.js";
+      break;
+
+    case "patrolsSubscriptions":
+      pagePath = "patrol-Managment/subscriptionList.html";
+      scriptPath = "../../Java script/patrol-Managment/subscriptionList.js";
+      break;
+
+    case "employees":
+      pagePath = "employee-Managment/employeeList.html";
+      scriptPath = "../../Java script/employee-Managment/employeeList.js";
+      break;
+
+    default:
+      pagePath = "dash-Boards/index.html";
+      scriptPath = "";
+  }
 
   fetch(pagePath)
+
     .then((res) => res.text())
     .then((html) => {
+
+      // Extract only the body content, not the entire HTML
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = html;
 
+      // Get the body content
       const bodyContent = tempDiv.querySelector('body');
-      content.innerHTML = bodyContent ? bodyContent.innerHTML : html;
+      if (bodyContent) {
+        content.innerHTML = bodyContent.innerHTML;
+      } else {
+        content.innerHTML = html;
+      }
 
+      // Load the script if specified
       if (scriptPath) {
-        const existingScript = document.querySelector(`script[src="${scriptPath}"]`);
-        if (existingScript) existingScript.remove();
 
+        // Remove existing script with the same path
+        const existingScript = document.querySelector(
+          `script[src="${scriptPath}"]`
+        );
+
+        if (existingScript) {
+          existingScript.remove();
+        }
+
+        // Clean up global variables that might cause redeclaration issues
+        cleanupGlobalVariables();
         const script = document.createElement("script");
         script.src = scriptPath;
         script.defer = true;
 
+        // Add error handling for script loading
         script.onerror = function () {
-          console.error(`فشل تحميل السكربت: ${scriptPath}`);
+          console.error(`Failed to load script: ${scriptPath}`);
         };
-
-        script.onload = function () {
-          if (typeof initializeDashboard === 'function') {
-            initializeDashboard();
-          }
-        };
-
         document.body.appendChild(script);
       }
     })
@@ -160,4 +294,34 @@ function loadDashboardContent() {
       content.innerHTML = "<p>حدث خطأ أثناء تحميل الصفحة.</p>";
       console.error(err);
     });
+
+  const menuItems = document.querySelectorAll(".menu li");
+  menuItems.forEach((item) => item.classList.remove("active"));
+  event.currentTarget.classList.add("active");
+}
+
+// Function to clean up global variables that might cause redeclaration issues
+function cleanupGlobalVariables() {
+
+  // Common variable names that might be redeclared
+  const commonVars = [
+    'consumables', 'editIndex', 'allCars', 'drivers',
+    'parts', 'vehicles', 'buses', 'orders', 'patrols', 'subscriptions',
+    'employees', 'users', 'maintenanceRequests', 'missionNotes', 'missionOrders',
+    'purchaseOrders', 'withdrawOrders', 'maintenanceRecords'
+  ];
+
+  // Don't clean up DOM element references as they need to be reinitialized
+  // Only clean up data arrays and state variables
+  commonVars.forEach(varName => {
+    if (window.hasOwnProperty(varName)) {
+      try {
+        delete window[varName];
+      } catch (e) {
+        // If deletion fails, set to undefined
+        window[varName] = undefined;
+
+      }
+    }
+  });
 }
