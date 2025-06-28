@@ -101,6 +101,9 @@ function loadDashboardContent() {
           existingScript.remove();
         }
 
+        // Clean up global variables that might cause redeclaration issues
+        cleanupGlobalVariables();
+
         const script = document.createElement("script");
         script.src = scriptPath;
         script.defer = true;
@@ -230,6 +233,9 @@ function changeContent(page) {
           existingScript.remove();
         }
 
+        // Clean up global variables that might cause redeclaration issues
+        cleanupGlobalVariables();
+
         const script = document.createElement("script");
         script.src = scriptPath;
         script.defer = true;
@@ -251,4 +257,29 @@ function changeContent(page) {
   menuItems.forEach((item) => item.classList.remove("active"));
 
   event.currentTarget.classList.add("active");
+}
+
+// Function to clean up global variables that might cause redeclaration issues
+function cleanupGlobalVariables() {
+  // Common variable names that might be redeclared
+  const commonVars = [
+    'consumables', 'editIndex', 'allCars', 'drivers',
+    'parts', 'vehicles', 'buses', 'orders', 'patrols', 'subscriptions',
+    'employees', 'users', 'maintenanceRequests', 'missionNotes', 'missionOrders',
+    'purchaseOrders', 'withdrawOrders', 'maintenanceRecords'
+  ];
+  
+  // Don't clean up DOM element references as they need to be reinitialized
+  // Only clean up data arrays and state variables
+  
+  commonVars.forEach(varName => {
+    if (window.hasOwnProperty(varName)) {
+      try {
+        delete window[varName];
+      } catch (e) {
+        // If deletion fails, set to undefined
+        window[varName] = undefined;
+      }
+    }
+  });
 }

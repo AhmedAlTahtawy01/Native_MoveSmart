@@ -19,12 +19,46 @@ document.addEventListener('DOMContentLoaded', function () {
 var parts = [];
 var editIndex = null;
 
-var partList = document.getElementById("parts");
-var cardsContainer = document.getElementById("cardsContainer");
-var totalSpan = document.getElementById("total");
-var searchInput = document.getElementById("search");
-var addBtnSubmit = document.getElementById("addBtnSubmit");
-var editBtnSubmit = document.getElementById("editBtnSubmit");
+// Declare variables globally to prevent redeclaration errors
+var partList, cardsContainer, totalSpan, searchInput, addBtnSubmit, editBtnSubmit;
+
+// Function to initialize DOM elements
+function initializeElements() {
+  partList = document.getElementById("parts");
+  cardsContainer = document.getElementById("cardsContainer");
+  totalSpan = document.getElementById("total");
+  searchInput = document.getElementById("search");
+  addBtnSubmit = document.getElementById("addBtnSubmit");
+  editBtnSubmit = document.getElementById("editBtnSubmit");
+  
+  // Debug logging
+  console.log("Initializing elements:", {
+    partList: !!partList,
+    cardsContainer: !!cardsContainer,
+    totalSpan: !!totalSpan,
+    searchInput: !!searchInput,
+    addBtnSubmit: !!addBtnSubmit,
+    editBtnSubmit: !!editBtnSubmit
+  });
+}
+
+// Initialize elements when script loads
+initializeElements();
+
+// Also initialize when DOM is ready (in case script loads before DOM)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeElements);
+} else {
+  // DOM is already ready
+  initializeElements();
+}
+
+// Add a small delay to ensure DOM is fully ready before fetching data
+setTimeout(() => {
+  console.log("Delayed initialization and data fetch");
+  initializeElements();
+  fetchParts();
+}, 100);
 
 // فتح البوب أب
 function openPop() {
@@ -54,6 +88,12 @@ function clearInputs() {
 // جلب البيانات
 async function fetchParts() {
   try {
+    // Reinitialize elements if they're not available
+    if (!partList || !cardsContainer || !totalSpan) {
+      console.log("Reinitializing elements in fetchParts");
+      initializeElements();
+    }
+    
     const token = localStorage.getItem("token");
     if (!token) {
       alert("يرجى تسجيل الدخول أولاً");
@@ -70,14 +110,15 @@ async function fetchParts() {
       }
     );
     const data = await response.json();
-    console.log(data);
+    console.log("Fetched data:", data);
 
     if (Array.isArray(data.$values)) {
       parts = data.$values;
     } else {
-      // parts = [];
+      parts = [];
     }
 
+    console.log("Parts array:", parts);
     renderPartsList();
   } catch (err) {
     console.error("حدث خطأ أثناء جلب البيانات:", err);
@@ -86,6 +127,25 @@ async function fetchParts() {
 
 // عرض البيانات
 function renderPartsList() {
+  console.log("Rendering parts list. Elements available:", {
+    partList: !!partList,
+    cardsContainer: !!cardsContainer,
+    totalSpan: !!totalSpan,
+    partsLength: parts.length
+  });
+  
+  // Reinitialize elements if they're not available
+  if (!partList || !cardsContainer || !totalSpan) {
+    console.log("Elements not available, reinitializing...");
+    initializeElements();
+  }
+  
+  // Double check after reinitialization
+  if (!partList || !cardsContainer || !totalSpan) {
+    console.error("Failed to initialize DOM elements");
+    return;
+  }
+  
   partList.innerHTML = "";
   cardsContainer.innerHTML = "";
 
@@ -103,6 +163,8 @@ function renderPartsList() {
     });
     totalSpan.innerText = parts.length;
   }
+  
+  console.log("Rendering completed");
 }
 
 // عرض الكارد
@@ -295,8 +357,6 @@ window.closePop = closePop;
 window.addPart = addPart;
 window.editPart = editPart;
 window.deletePart = deletePart;
-// أول تحميل
-fetchParts();
 
 // تحديث
 document.getElementById("refreshBtn").onclick = fetchParts;

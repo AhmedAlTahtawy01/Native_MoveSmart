@@ -18,12 +18,46 @@ document.addEventListener("DOMContentLoaded", function () {
 var consumables = [];
 var editIndex = null;
 
-const listEl = document.getElementById("consumables");
-const cardsContainer = document.getElementById("consumablesCards");
-const totalSpan = document.getElementById("total");
-const searchInput = document.getElementById("search");
-const addBtnSubmit = document.getElementById("addBtnSubmit");
-const editBtnSubmit = document.getElementById("editBtnSubmit");
+// Declare variables globally to prevent redeclaration errors
+var listEl, cardsContainer, totalSpan, searchInput, addBtnSubmit, editBtnSubmit;
+
+// Function to initialize DOM elements
+function initializeElements() {
+  listEl = document.getElementById("consumables");
+  cardsContainer = document.getElementById("consumablesCards");
+  totalSpan = document.getElementById("total");
+  searchInput = document.getElementById("search");
+  addBtnSubmit = document.getElementById("addBtnSubmit");
+  editBtnSubmit = document.getElementById("editBtnSubmit");
+  
+  // Debug logging
+  console.log("Initializing disposal elements:", {
+    listEl: !!listEl,
+    cardsContainer: !!cardsContainer,
+    totalSpan: !!totalSpan,
+    searchInput: !!searchInput,
+    addBtnSubmit: !!addBtnSubmit,
+    editBtnSubmit: !!editBtnSubmit
+  });
+}
+
+// Initialize elements when script loads
+initializeElements();
+
+// Also initialize when DOM is ready (in case script loads before DOM)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeElements);
+} else {
+  // DOM is already ready
+  initializeElements();
+}
+
+// Add a small delay to ensure DOM is fully ready before fetching data
+setTimeout(() => {
+  console.log("Delayed initialization and data fetch for disposals");
+  initializeElements();
+  fetchConsumables();
+}, 100);
 
 // فتح البوب أب
 function openPop() {
@@ -50,6 +84,12 @@ function clearInputs() {
 // جلب البيانات
 async function fetchConsumables() {
   try {
+    // Reinitialize elements if they're not available
+    if (!listEl || !cardsContainer || !totalSpan) {
+      console.log("Reinitializing elements in fetchConsumables");
+      initializeElements();
+    }
+    
     const token = localStorage.getItem("token");
     const res = await fetch(
       "https://movesmartapi.runasp.net/api/VehicleConsumable",
@@ -58,7 +98,9 @@ async function fetchConsumables() {
       }
     );
     const data = await res.json();
+    console.log("Fetched consumables data:", data);
     consumables = Array.isArray(data.$values) ? data.$values : [];
+    console.log("Consumables array:", consumables);
     renderConsumablesList();
   } catch (err) {
     console.error("خطأ في جلب المستهلكات:", err);
@@ -67,6 +109,25 @@ async function fetchConsumables() {
 
 // عرض القائمة والكروت
 function renderConsumablesList() {
+  console.log("Rendering consumables list. Elements available:", {
+    listEl: !!listEl,
+    cardsContainer: !!cardsContainer,
+    totalSpan: !!totalSpan,
+    consumablesLength: consumables.length
+  });
+  
+  // Reinitialize elements if they're not available
+  if (!listEl || !cardsContainer || !totalSpan) {
+    console.log("Elements not available, reinitializing...");
+    initializeElements();
+  }
+  
+  // Double check after reinitialization
+  if (!listEl || !cardsContainer || !totalSpan) {
+    console.error("Failed to initialize DOM elements");
+    return;
+  }
+  
   listEl.innerHTML = "";
   cardsContainer.innerHTML = "";
 
@@ -85,6 +146,7 @@ function renderConsumablesList() {
   }
 
   totalSpan.innerText = consumables.length;
+  console.log("Consumables rendering completed");
 }
 
 // عرض الكارت

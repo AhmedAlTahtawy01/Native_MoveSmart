@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// let drivers = [];
+// Global variable declaration to prevent redeclaration errors
+var drivers = [];
 
 function openPop() {
   document.getElementById("add-pop").classList.remove("hidden");
