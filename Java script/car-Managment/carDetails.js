@@ -304,7 +304,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((res) => {
         if (res.ok) {
           alert("تم حذف المركبة بنجاح.");
-          window.location.href = "../../Pages/car-Managment/carList.html";
+          window.location.href = "../../Pages/sharedLayout.html";
         } else {
           return res.text().then((text) => {
             throw new Error(text);
