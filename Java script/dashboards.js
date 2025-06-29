@@ -26,7 +26,6 @@
 
     switch (userRole) {
       case "PatrolsSupervisor":
-        // يظهر بس الكروت الخاصة بالدوريات
         orders?.classList.add("hidden");
         consumables?.classList.add("hidden");
         spareParts?.classList.add("hidden");
@@ -340,9 +339,6 @@
       if (totalElement) {
         totalElement.textContent = totalSpareParts;
       }
-
-      // Note: The HTML doesn't have separate elements for available, used, in-order
-      // So we'll just update the total for now
 
       // Create chart
       createSparePartChart([

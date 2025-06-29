@@ -572,7 +572,7 @@ async function submitJobOrder(e) {
   const payload = {
     orderId: editId
       ? parseInt(editId)
-      : parseInt(document.getElementById("orderId").value) || 0,
+      : 0,
     application: {
       applicationId:
         parseInt(document.getElementById("applicationId").value) || 0,
@@ -598,9 +598,9 @@ async function submitJobOrder(e) {
 
   try {
     const method = editId ? "PUT" : "POST";
-    const url = editId ? `"https://movesmartapi.runasp.net/api/v1/JobOrder"/${editId}` : "https://movesmartapi.runasp.net/api/v1/JobOrder";
+    const jobOrderurl = editId ? `"https://movesmartapi.runasp.net/api/v1/JobOrder"/${editId}` : "https://movesmartapi.runasp.net/api/v1/JobOrder";
 
-    const response = await fetch(url, {
+    const response = await fetch(jobOrderurl, {
       method,
       headers: {
         "Content-Type": "application/json",

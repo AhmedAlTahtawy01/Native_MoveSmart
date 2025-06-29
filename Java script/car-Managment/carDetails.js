@@ -1,19 +1,19 @@
 // Get authentication data from localStorage (only if not already declared)
-if (typeof token === 'undefined') {
-  var token = localStorage.getItem('token');
+if (typeof token === "undefined") {
+  var token = localStorage.getItem("token");
 }
-if (typeof userRole === 'undefined') {
-  var userRole = localStorage.getItem('userRole');
+if (typeof userRole === "undefined") {
+  var userRole = localStorage.getItem("userRole");
 }
-if (typeof userName === 'undefined') {
-  var userName = localStorage.getItem('userName');
+if (typeof userName === "undefined") {
+  var userName = localStorage.getItem("userName");
 }
 
-console.log('=== CarDetails.js Authentication Debug ===');
-console.log('Token exists:', !!token);
-console.log('User Role:', userRole);
-console.log('User Name:', userName);
-console.log('=========================================');
+console.log("=== CarDetails.js Authentication Debug ===");
+console.log("Token exists:", !!token);
+console.log("User Role:", userRole);
+console.log("User Name:", userName);
+console.log("=========================================");
 
 document.addEventListener("DOMContentLoaded", function () {
   const tabs = document.querySelectorAll(".tab");
@@ -93,6 +93,87 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((err) => {
         console.error("فشل تحميل بيانات السيارة:", err);
+      });
+  }
+
+  function loadJobOrders() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const vehicleId = urlParams.get("id");
+
+    fetch(
+      `https://movesmartapi.runasp.net/api/v1/JobOrder/vehicle/${vehicleId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((response) => {
+        console.log("📦 Job Orders Response:", response);
+        const orders = response["$values"] || [];
+        const tableBody = document.querySelector(".orders-content");
+        tableBody.innerHTML = "";
+
+        if (orders.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="6">لا توجد أوامر شغل.</td></tr>`;
+          return;
+        }
+
+        orders.forEach((order) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+          <td>${order.vehicleId || "-"}</td>
+          <td>${(order.startDate || "").split("T")[0]}</td>
+          <td>${order.startTime || "-"}</td>
+          <td>${order.destination || "-"}</td>
+          <td>${order.odometerBefore ?? "-"}</td>
+          <td>${order.orderId}</td>
+        `;
+          tableBody.appendChild(row);
+        });
+      })
+      .catch((err) => {
+        console.error("❌ فشل تحميل أوامر الشغل:", err);
+      });
+  }
+
+  function loadMaintenanceRecords() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const vehicleID = urlParams.get("id");
+
+    fetch(
+      `https://movesmartapi.runasp.net/api/v1/Maintanance/ByVehicleId/${vehicleID}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((records) => {
+        const tableBody = document.querySelector(".maintenance-content");
+        tableBody.innerHTML = "";
+
+        if (!records || records.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="3">لا توجد سجلات صيانة.</td></tr>`;
+          return;
+        }
+
+        records.forEach((record, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${(record.maintenanceDate || "").split("T")[0]}</td>
+          <td>${record.description || "بدون تفاصيل"}</td>
+        `;
+          tableBody.appendChild(row);
+        });
+      })
+      .catch((err) => {
+        console.error("فشل تحميل سجل الصيانة:", err);
       });
   }
 
@@ -247,36 +328,16 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function refreshData() {
-    loadCarData(); // إعادة تحميل السيارات من الـ API
+    loadCarData();
   }
 
   document.querySelector("[data-tab='car-info']")?.click();
   loadCarData();
-
-  // Add these functions
-
-  function openAddBusPopup() {
-    document.getElementById("addBusPopup").style.display = "block";
-  }
+  loadJobOrders();
+  loadMaintenanceRecords();
 
   function closeAddBusPopup() {
     document.getElementById("addBusPopup").style.display = "none";
-  }
-
-  function submitBusForm(event) {
-    event.preventDefault();
-    // Add your form submission logic here
-    const formData = {
-      plateNumbers: document.getElementById("plateNumbers").value,
-      model: document.getElementById("model").value,
-      manufacturer: document.getElementById("manufacturer").value,
-      year: document.getElementById("year").value,
-      capacity: document.getElementById("capacity").value,
-      status: document.getElementById("status").value,
-    };
-    console.log("Form Data:", formData);
-    // Add your API call here
-    closeAddBusPopup();
   }
 
   const deleteButton = document.querySelector(".delete-btn");
