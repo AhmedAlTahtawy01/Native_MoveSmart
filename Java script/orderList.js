@@ -2,6 +2,11 @@ console.log(window.token, window.userRole, window.userName, window.role);
 // Navigation functionality
 console.log("Role from localStorage:", localStorage.getItem("userRole"));
 
+// Global variables for maintenance functionality
+window.isEditingMaintenance = false;
+window.editingMaintenanceId = null;
+window.editingApplicationId = null;
+
 document.addEventListener("DOMContentLoaded", function () {
   if (!token) {
     window.location.href = "../Login.html";
@@ -1915,8 +1920,6 @@ function mapApplicationStatus(status) {
 }
 
 // ✅ تعديل الطلب
-var editingApplicationId = null;
-
 async function editMaintenanceRequest(id) {
   try {
     const res = await fetch(
@@ -1929,8 +1932,8 @@ async function editMaintenanceRequest(id) {
     if (!res.ok) throw new Error("فشل تحميل بيانات الطلب");
     const data = await res.json();
 
-    editingMaintenanceId = data.maintenanceApplicationID;
-    editingApplicationId = data.application?.applicationId;
+    window.editingMaintenanceId = data.maintenanceApplicationID;
+    window.editingApplicationId = data.application?.applicationId;
 
     openAddMaintenanceRequestForm(data);
   } catch (err) {
@@ -2101,8 +2104,6 @@ async function updateVehicleStatus(vehicleId, statusName) {
 }
 
 // ✅ فتح النموذج
-let isEditingMaintenance = false;
-let editingMaintenanceId = null;
 
 function openAddMaintenanceRequestForm(data = null) {
   document
@@ -2114,15 +2115,15 @@ function openAddMaintenanceRequestForm(data = null) {
   const title = document.getElementById("maintenanceFormTitle");
 
   if (data) {
-    isEditingMaintenance = true;
-    editingMaintenanceId = data.maintenanceApplicationID;
+    window.isEditingMaintenance = true;
+    window.editingMaintenanceId = data.maintenanceApplicationID;
     title.textContent = "تعديل طلب صيانة";
     document.getElementById("maintenanceVehicleSelect").value = data.vehicleID;
     document.getElementById("maintenanceDescription").value =
       data.application?.applicationDescription || "";
   } else {
-    isEditingMaintenance = false;
-    editingMaintenanceId = null;
+    window.isEditingMaintenance = false;
+    window.editingMaintenanceId = null;
     title.textContent = "طلب صيانة جديد";
   }
 }
@@ -2172,13 +2173,13 @@ async function submitMaintenanceRequest(e) {
   const description = document.getElementById("maintenanceDescription").value;
 
   const payload = {
-    maintenanceApplicationID: editingMaintenanceId ?? 0,
-    applicationID: isEditingMaintenance ? editingApplicationId : 0,
+    maintenanceApplicationID: window.editingMaintenanceId ?? 0,
+    applicationID: window.isEditingMaintenance ? window.editingApplicationId : 0,
     vehicleID: vehicleId,
     approvedByGeneralSupervisor: false,
     approvedByGeneralManager: false,
     application: {
-      applicationId: isEditingMaintenance ? editingApplicationId : 0,
+      applicationId: window.isEditingMaintenance ? window.editingApplicationId : 0,
       creationDate: new Date().toISOString(),
       status: 3,
       applicationType: 7,
@@ -2190,7 +2191,7 @@ async function submitMaintenanceRequest(e) {
 
   try {
     const url = `https://movesmartapi.runasp.net/api/MaintenanceApplications`;
-    const method = isEditingMaintenance ? "PUT" : "POST";
+    const method = window.isEditingMaintenance ? "PUT" : "POST";
 
     const res = await fetch(url, {
       method,
@@ -2209,17 +2210,6 @@ async function submitMaintenanceRequest(e) {
   } catch (err) {
     console.error("خطأ في حفظ الطلب:", err);
     alert("❌ حدث خطأ أثناء الحفظ");
-  }
-}
-
-function getUserIdFromToken() {
-  if (!token) return null;
-
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.nameid;
-  } catch {
-    return null;
   }
 }
 
@@ -2723,8 +2713,8 @@ function mapStatus(code) {
   }
 }
 
-const missionApi = "https://movesmartapi.runasp.net/api/Mission";
-const missionNotesApi = "https://movesmartapi.runasp.net/api/MissionsNotes/All";
+window.missionApi = "https://movesmartapi.runasp.net/api/Mission";
+window.missionNotesApi = "https://movesmartapi.runasp.net/api/MissionsNotes/All";
 
 // ✅ إظهار الكارت حسب الدور
 if (

@@ -30,6 +30,9 @@ body {
     z-index: 100;
     transition: transform 0.3s ease;
     overflow-y: auto;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .logo {
@@ -69,6 +72,10 @@ body {
     border-radius: 6px;
     direction: rtl;
     text-align: right;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    text-overflow: ellipsis;
 }
 
 .menu li img {
@@ -459,6 +466,7 @@ input:focus, select:focus, textarea:focus {
     .sidebar {
         width: 200px;
         padding: 12px;
+        overflow-x: hidden;
     }
     
     .topbar {
@@ -495,6 +503,7 @@ input:focus, select:focus, textarea:focus {
         transform: translateX(100%);
         width: 280px;
         z-index: 1000;
+        overflow-x: hidden;
     }
     
     .sidebar.show {
