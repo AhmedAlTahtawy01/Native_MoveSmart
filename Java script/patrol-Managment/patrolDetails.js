@@ -1,4 +1,12 @@
-console.log(window.token, window.userRole, window.userName, window.role);
+if (typeof token === 'undefined') {
+  var token = localStorage.getItem('token');
+}
+if (typeof userRole === 'undefined') {
+  var userRole = localStorage.getItem('userRole');
+}
+if (typeof userName === 'undefined') {
+  var userName = localStorage.getItem('userName');
+}
 document.addEventListener("DOMContentLoaded", async function () {
   if (!token) {
     window.location.href = "../Login.html";

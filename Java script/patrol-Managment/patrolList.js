@@ -148,7 +148,7 @@ function renderPatrols(patrols) {
     const card = document.createElement("div");
     card.className = "card";
     card.onclick = () => {
-      window.location.href = `../patrol-Managment/patrolDetails.html?id=${patrol.patrolID}`;
+      window.location.href = `patrol-Managment/patrolDetails.html?id=${patrol.patrolID}`;
     };
 
     card.innerHTML = `
@@ -296,3 +296,6 @@ function refreshData() {
   fetchPatrols();
   fetchBusesForSelect();
 }
+
+  fetchPatrols();
+  fetchBusesForSelect();
