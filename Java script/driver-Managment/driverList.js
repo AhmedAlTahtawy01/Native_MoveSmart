@@ -1,18 +1,36 @@
-console.log(window.token, window.userRole, window.userName, window.role);
+// Get authentication data from localStorage (only if not already declared)
+if (typeof token === 'undefined') {
+  var token = localStorage.getItem('token');
+}
+if (typeof userRole === 'undefined') {
+  var userRole = localStorage.getItem('userRole');
+}
+if (typeof userName === 'undefined') {
+  var userName = localStorage.getItem('userName');
+}
+
+console.log('=== DriverList.js Authentication Debug ===');
+console.log('Token exists:', !!token);
+console.log('User Role:', userRole);
+console.log('User Name:', userName);
+console.log('========================================');
+
 // Navigation functionality
 document.addEventListener('DOMContentLoaded', function () {
 
   if (!token) {
-    window.location.href = '../../Login.html';
+    window.location.href = '../../Pages/Login.html';
     return;
   }
 
   // Add click event listener to the page title for navigation
   const pageTitle = document.querySelector('h2');
-  pageTitle.style.cursor = 'pointer';
-  pageTitle.addEventListener('click', function () {
-    window.location.href = `../dash-Boards/${userRole.toLowerCase()}Dashboard.html`;
-  });
+  if (pageTitle) {
+    pageTitle.style.cursor = 'pointer';
+    pageTitle.addEventListener('click', function () {
+      window.location.href = `../dash-Boards/${userRole.toLowerCase()}Dashboard.html`;
+    });
+  }
 });
 
 // Global variable declaration to prevent redeclaration errors
