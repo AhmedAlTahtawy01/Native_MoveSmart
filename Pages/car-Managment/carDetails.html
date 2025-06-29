@@ -12,14 +12,14 @@
     <div class="container">
         <div class="top-section">
             <div class="car-container">
-                <h2 class="car-title">إدارة السيارات</h2>
+                <h2 class="car-title">إدارة المركبات</h2>
                 <div class="car-info">
-                    <img src="../../Assets/Images/car-Avt.png" alt="صورة السيارة" class="profile-pic" />
+                    <img src="../../Assets/Images/car-Avt.png" alt="صورة المركبة" class="profile-pic" />
                     <div class="driver-details-container">
-                        <h2 id="car-number">رقم السيارة</h2>
+                        <h2 id="car-number">رقم المركبة</h2>
                         <p id="car-make">الماركة: -</p>
                         <p id="car-model">الموديل: -</p>
-                        <p id="car-type">نوع السيارة: -</p>
+                        <p id="car-type">نوع المركبة: -</p>
                     </div>
                 </div>
                 <div class="km-box">
@@ -39,7 +39,7 @@
 
         <div class="tabs-container">
             <div class="tabs">
-                <button class="tab active" data-tab="car-info">معلومات السيارة</button>
+                <button class="tab active" data-tab="car-info">معلومات المركبة</button>
                 <button class="tab" data-tab="work-orders">سجل أوامر الشغل</button>
                 <button class="tab" data-tab="maintenance-record">سجل الصيانة</button>
             </div>
@@ -50,7 +50,7 @@
             <div class="form-container">
                 <div class="column">
                     <div class="input-group">
-                        <label>رقم السيارة:</label>
+                        <label>رقم المركبة:</label>
                         <input type="text" name="carNumber" />
                         <small class="error" id="error-carNumber"></small>
                     </div>
@@ -68,7 +68,7 @@
                     </div>
 
                     <div class="input-group">
-                        <label>نوع السيارة:</label>
+                        <label>نوع المركبة:</label>
                         <select name="carType">
                             <option value="">-- اختر --</option>
                             <option value="0">سيدان</option>
@@ -84,7 +84,7 @@
                     </div>
 
                     <div class="input-group">
-                        <label>حالة السيارة:</label>
+                        <label>حالة المركبة:</label>
                         <select name="carCondition">
                             <option value="">-- اختر --</option>
                             <option value="1">متاحة</option>
@@ -92,6 +92,19 @@
                             <option value="3">في الصيانة</option>
                         </select>
                         <small class="error" id="error-carCondition"></small>
+                    </div>
+
+                    <!-- Bus-specific fields -->
+                    <div class="input-group bus-only" style="display: none;">
+                        <label>السعة الكلية:</label>
+                        <input type="number" name="capacity" readonly />
+                        <small class="error" id="error-capacity"></small>
+                    </div>
+
+                    <div class="input-group bus-only" style="display: none;">
+                        <label>المقاعد المتاحة:</label>
+                        <input type="number" name="availableSpace" readonly />
+                        <small class="error" id="error-availableSpace"></small>
                     </div>
                 </div>
 

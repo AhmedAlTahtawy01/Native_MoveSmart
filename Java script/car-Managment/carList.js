@@ -209,7 +209,17 @@ function displayCars(filteredList) {
     carCard.classList.add("card");
     carCard.style.cursor = "pointer";
 
-    const carLink = `../../Pages/car-Managment/carDetails.html?id=${car.vehicleID}&type=${car.isBus ? "bus" : "vehicle"}`;
+    const carLink = `../../Pages/car-Managment/carDetails.html?id=${car.isBus ? car.busID : car.vehicleID}&type=${car.isBus ? "bus" : "vehicle"}`;
+    
+    // Debug logging
+    console.log("Car debug:", {
+      isBus: car.isBus,
+      vehicleID: car.vehicleID,
+      busID: car.busID,
+      plateNumbers: car.plateNumbers,
+      generatedLink: carLink
+    });
+    
     carCard.onclick = () => {
       window.location.href = carLink;
     };
