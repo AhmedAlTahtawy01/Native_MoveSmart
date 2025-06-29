@@ -1,4 +1,32 @@
+// Get authentication data from localStorage (only if not already declared)
+if (typeof token === 'undefined') {
+  var token = localStorage.getItem('token');
+}
+if (typeof userRole === 'undefined') {
+  var userRole = localStorage.getItem('userRole');
+}
+if (typeof userName === 'undefined') {
+  var userName = localStorage.getItem('userName');
+}
+
 console.log(window.token, window.userRole, window.userName, window.role);
+
+// Cleanup function to clear global variables when script is reloaded
+window.clearScriptVariables = function() {
+  if (typeof allPatrols !== 'undefined') {
+    delete window.allPatrols;
+  }
+  if (typeof busesMap !== 'undefined') {
+    delete window.busesMap;
+  }
+  if (typeof driversMap !== 'undefined') {
+    delete window.driversMap;
+  }
+  if (typeof headers !== 'undefined') {
+    delete window.headers;
+  }
+};
+
 document.addEventListener("DOMContentLoaded", function () {
 
   if (!token) {
@@ -6,15 +34,38 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  if (userRole !== "PatrolsSupervisor") {
-    window.location.href = `${userRole.toLowerCase()}Dashboard.html`;
+  // Check if user has permission to access patrols
+  if (typeof allowedRoles === 'undefined') {
+    var allowedRoles = ["HospitalManager", "GeneralManager", "GeneralSupervisor", "PatrolsSupervisor"];
+  }
+  if (!allowedRoles.includes(userRole)) {
+    window.location.href = `sharedLayout.html`;
     return;
   }
+
+  // Initialize data after DOM is loaded
+  fetchPatrols();
+  fetchBusesForSelect();
 });
 
-let allPatrols = [];
-let busesMap = {};
-let driversMap = {}; // خريطة السائقين حسب vehicleID
+// Define headers for API requests (only if not already declared)
+if (typeof headers === 'undefined') {
+  var headers = {
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+    "Content-Type": "application/json",
+  };
+}
+
+// Check if variables already exist to prevent redeclaration
+if (typeof allPatrols === 'undefined') {
+  var allPatrols = [];
+}
+if (typeof busesMap === 'undefined') {
+  var busesMap = {};
+}
+if (typeof driversMap === 'undefined') {
+  var driversMap = {}; // خريطة السائقين حسب vehicleID
+}
 
 async function fetchPatrols() {
   try {
@@ -152,45 +203,24 @@ function getPatrolStatus(patrol) {
   return now < endTime ? "قيد التنفيذ" : "منتهية";
 }
 
-document.getElementById("search").addEventListener("input", () => {
-  const query = document.getElementById("search").value.toLowerCase();
-  const filtered = allPatrols.filter(
-    (p) =>
-      p.description?.toLowerCase().includes(query) ||
-      String(p.patrolID).includes(query)
-  );
-  renderPatrols(filtered);
-});
-
-document.getElementById("filter-select").addEventListener("change", () => {
-  const value = document.getElementById("filter-select").value;
-  let filtered = allPatrols;
-
-  if (value === "active") {
-    filtered = allPatrols.filter((p) => getPatrolStatus(p) === "قيد التنفيذ");
-  } else if (value === "finished") {
-    filtered = allPatrols.filter((p) => getPatrolStatus(p) === "منتهية");
-  }
-
-  renderPatrols(filtered);
-});
-
 function openAddPatrolPop() {
   document.getElementById("add-pop").classList.remove("hidden");
 }
+
 function closeAddPatrolPop() {
   document.getElementById("add-pop").classList.add("hidden");
 }
 
 async function fetchBusesForSelect() {
   try {
-    const res = await fetch("https://movesmartapi.runasp.net/api/Buses/all", {
+    const res = await fetch("https://movesmartapi.runasp.net/api/Buses/All", {
       headers,
     });
     const busesData = await res.json();
     const buses = busesData.$values || [];
 
     const select = document.getElementById("bus-select");
+    select.innerHTML = '<option value="">-- اختر الباص --</option>';
     buses.forEach((bus) => {
       const option = document.createElement("option");
       option.value = bus.busID;
@@ -238,5 +268,31 @@ async function submitNewPatrol() {
   }
 }
 
-fetchPatrols();
-fetchBusesForSelect();
+// Functions referenced in HTML
+function searchPatrols() {
+  const query = document.getElementById("search").value.toLowerCase();
+  const filtered = allPatrols.filter(
+    (p) =>
+      p.description?.toLowerCase().includes(query) ||
+      String(p.patrolID).includes(query)
+  );
+  renderPatrols(filtered);
+}
+
+function filterPatrols() {
+  const value = document.getElementById("filter-select").value;
+  let filtered = allPatrols;
+
+  if (value === "active") {
+    filtered = allPatrols.filter((p) => getPatrolStatus(p) === "قيد التنفيذ");
+  } else if (value === "ended") {
+    filtered = allPatrols.filter((p) => getPatrolStatus(p) === "منتهية");
+  }
+
+  renderPatrols(filtered);
+}
+
+function refreshData() {
+  fetchPatrols();
+  fetchBusesForSelect();
+}

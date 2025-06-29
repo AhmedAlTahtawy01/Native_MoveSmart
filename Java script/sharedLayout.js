@@ -293,6 +293,11 @@ function cleanupGlobalVariables() {
     "purchaseOrders",
     "withdrawOrders",
     "maintenanceRecords",
+    "allPatrols",
+    "busesMap",
+    "driversMap",
+    "headers",
+    "allowedRoles"
   ];
 
   // Common constants that might be redeclared
