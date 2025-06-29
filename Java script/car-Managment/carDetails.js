@@ -1,4 +1,20 @@
-console.log(window.token, window.userRole, window.userName, window.role);
+// Get authentication data from localStorage (only if not already declared)
+if (typeof token === 'undefined') {
+  var token = localStorage.getItem('token');
+}
+if (typeof userRole === 'undefined') {
+  var userRole = localStorage.getItem('userRole');
+}
+if (typeof userName === 'undefined') {
+  var userName = localStorage.getItem('userName');
+}
+
+console.log('=== CarDetails.js Authentication Debug ===');
+console.log('Token exists:', !!token);
+console.log('User Role:', userRole);
+console.log('User Name:', userName);
+console.log('=========================================');
+
 document.addEventListener("DOMContentLoaded", function () {
   const tabs = document.querySelectorAll(".tab");
   const tabContents = document.querySelectorAll(".tab-content");

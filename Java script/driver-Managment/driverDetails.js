@@ -1,4 +1,20 @@
-console.log(window.token, window.userRole, window.userName, window.role);
+// Get authentication data from localStorage (only if not already declared)
+if (typeof token === 'undefined') {
+  var token = localStorage.getItem('token');
+}
+if (typeof userRole === 'undefined') {
+  var userRole = localStorage.getItem('userRole');
+}
+if (typeof userName === 'undefined') {
+  var userName = localStorage.getItem('userName');
+}
+
+console.log('=== DriverDetails.js Authentication Debug ===');
+console.log('Token exists:', !!token);
+console.log('User Role:', userRole);
+console.log('User Name:', userName);
+console.log('===========================================');
+
 document.addEventListener("DOMContentLoaded", function () {
   const saveButton = document.querySelector(".save-btn");
   const deleteButton = document.querySelector(".delete-btn");
@@ -161,6 +177,11 @@ document.addEventListener("DOMContentLoaded", function () {
       if (addVacationButton) {
         addVacationButton.style.display =
           this.dataset.tab === "vacation-record" ? "block" : "none";
+      }
+      
+      // Load vacations only when vacation tab is clicked
+      if (this.dataset.tab === "vacation-record") {
+        loadDriverVacations();
       }
     });
   });
@@ -356,9 +377,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // استدعِ دالة تحميل السائقين
   loadSubstituteDrivers();
-
-  // استدعِ دالة تحميل الإجازات
-  loadDriverVacations();
 
   // تعيين التبويب الافتراضي وتحميل البيانات
   document.querySelector("[data-tab='driver-info']")?.click();
