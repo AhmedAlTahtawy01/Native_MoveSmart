@@ -29,7 +29,13 @@
         orders?.classList.add("hidden");
         consumables?.classList.add("hidden");
         spareParts?.classList.add("hidden");
-        cars?.classList.add("hidden")
+        // Don't hide cars card, but change its title to show buses instead
+        if (cars) {
+          const titleElement = cars.querySelector("h2");
+          if (titleElement) {
+            titleElement.textContent = "نظرة عامة على الحافلات";
+          }
+        }
         break;
 
       case "WorkshopSupervisor":
@@ -77,20 +83,69 @@
 
   async function initializeDashboard() {
     try {
-      // Load all dashboard data
-      await Promise.all([
-        loadDriverData(),
-        loadCarData(),
-        loadOrderData(),
-        loadConsumableData(),
-        loadSparePartData(),
-        loadPatrolData(),
-        loadSubscriptionData(),
-      ]);
+      // Check if we're still on the dashboard page
+      if (!document.getElementById("driverChart")) {
+        console.log("Dashboard elements not found, page may have changed");
+        return;
+      }
+
+      // Get user role and determine which data to load
+      const userRole = localStorage.getItem("userRole");
+      const dataLoaders = getDataLoadersByRole(userRole);
+      
+      // Load only the data that the user has access to
+      await Promise.all(dataLoaders);
     } catch (error) {
       console.error("Error initializing dashboard:", error);
       showNotification("حدث خطأ في تحميل البيانات", "error");
     }
+  }
+
+  // Function to determine which data loaders to call based on user role
+  function getDataLoadersByRole(userRole) {
+    const loaders = [];
+    
+    switch (userRole) {
+      case "PatrolsSupervisor":
+        // Only load drivers, buses (instead of cars), patrols, and subscriptions data
+        loaders.push(loadDriverData());
+        loaders.push(loadBusData());
+        loaders.push(loadPatrolData());
+        loaders.push(loadSubscriptionData());
+        break;
+
+      case "WorkshopSupervisor":
+        // Only load consumables and spare parts data
+        loaders.push(loadConsumableData());
+        loaders.push(loadSparePartData());
+        break;
+
+      case "AdministrativeSupervisor":
+        // Only load drivers and cars data
+        loaders.push(loadDriverData());
+        loaders.push(loadCarData());
+        break;
+
+      case "GeneralManager":
+      case "HospitalManager":
+      case "GeneralSupervisor":
+        // Load all data
+        loaders.push(loadDriverData());
+        loaders.push(loadCarData());
+        loaders.push(loadOrderData());
+        loaders.push(loadConsumableData());
+        loaders.push(loadSparePartData());
+        loaders.push(loadPatrolData());
+        loaders.push(loadSubscriptionData());
+        break;
+
+      default:
+        // For unknown roles, don't load any data
+        console.warn("Unknown user role:", userRole);
+        break;
+    }
+    
+    return loaders;
   }
 
   // Driver data functions
@@ -141,15 +196,22 @@
         ? await onLeaveResponse.json()
         : 0;
 
-      // Update UI
-      document.getElementById("total-drivers").textContent = totalDrivers;
-      document.getElementById("working-drivers").textContent = workingDrivers;
-      document.getElementById("available-drivers").textContent =
-        availableDrivers;
-      document.getElementById("onleave-drivers").textContent = onLeaveDrivers;
+      // Update UI - with safety checks
+      const totalElement = document.getElementById("total-drivers");
+      const workingElement = document.getElementById("working-drivers");
+      const availableElement = document.getElementById("available-drivers");
+      const onleaveElement = document.getElementById("onleave-drivers");
 
-      // Create chart
-      createDriverChart([workingDrivers, availableDrivers, onLeaveDrivers]);
+      if (totalElement) totalElement.textContent = totalDrivers;
+      if (workingElement) workingElement.textContent = workingDrivers;
+      if (availableElement) availableElement.textContent = availableDrivers;
+      if (onleaveElement) onleaveElement.textContent = onLeaveDrivers;
+
+      // Create chart only if we're still on the dashboard page
+      const chartCanvas = document.getElementById("driverChart");
+      if (chartCanvas) {
+        createDriverChart([workingDrivers, availableDrivers, onLeaveDrivers]);
+      }
     } catch (error) {
       console.error("Error loading driver data:", error);
       setDefaultValues("driver");
@@ -202,16 +264,79 @@
       });
       const workingCars = workingResponse.ok ? await workingResponse.json() : 0;
 
-      // Update UI
-      document.getElementById("total-cars").textContent = totalCars;
-      document.getElementById("cars-maintenance").textContent = maintenanceCars;
-      document.getElementById("cars-available").textContent = availableCars;
-      document.getElementById("cars-working").textContent = workingCars;
+      // Update UI - with safety checks
+      const totalElement = document.getElementById("total-cars");
+      const maintenanceElement = document.getElementById("cars-maintenance");
+      const availableElement = document.getElementById("cars-available");
+      const workingElement = document.getElementById("cars-working");
 
-      // Create chart
-      createCarChart([maintenanceCars, availableCars, workingCars]);
+      if (totalElement) totalElement.textContent = totalCars;
+      if (maintenanceElement) maintenanceElement.textContent = maintenanceCars;
+      if (availableElement) availableElement.textContent = availableCars;
+      if (workingElement) workingElement.textContent = workingCars;
+
+      // Create chart only if we're still on the dashboard page
+      const chartCanvas = document.getElementById("carChart");
+      if (chartCanvas) {
+        createCarChart([maintenanceCars, availableCars, workingCars]);
+      }
     } catch (error) {
       console.error("Error loading car data:", error);
+      setDefaultValues("car");
+    }
+  }
+
+  // Bus data functions
+  async function loadBusData() {
+    try {
+      const token = localStorage.getItem("token");
+      const baseUrl = "https://movesmartapi.runasp.net/api/Buses";
+
+      // Fetch all buses to count them
+      const allBusesResponse = await fetch(`${baseUrl}/All`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!allBusesResponse.ok) throw new Error("Failed to fetch buses");
+      const busesData = await allBusesResponse.json();
+      const buses = busesData.$values || [];
+      const totalBuses = buses.length;
+
+      // Count buses by status (assuming buses have similar status structure to vehicles)
+      let maintenanceBuses = 0;
+      let availableBuses = 0;
+      let workingBuses = 0;
+
+      buses.forEach(bus => {
+        if (bus.vehicle) {
+          const status = bus.vehicle.status;
+          if (status === 3) maintenanceBuses++;
+          else if (status === 1) availableBuses++;
+          else if (status === 2) workingBuses++;
+        }
+      });
+
+      // Update UI - using the same car elements but with bus data
+      const totalElement = document.getElementById("total-cars");
+      const maintenanceElement = document.getElementById("cars-maintenance");
+      const availableElement = document.getElementById("cars-available");
+      const workingElement = document.getElementById("cars-working");
+
+      if (totalElement) totalElement.textContent = totalBuses;
+      if (maintenanceElement) maintenanceElement.textContent = maintenanceBuses;
+      if (availableElement) availableElement.textContent = availableBuses;
+      if (workingElement) workingElement.textContent = workingBuses;
+
+      // Create chart only if we're still on the dashboard page
+      const chartCanvas = document.getElementById("carChart");
+      if (chartCanvas) {
+        createCarChart([maintenanceBuses, availableBuses, workingBuses]);
+      }
+    } catch (error) {
+      console.error("Error loading bus data:", error);
       setDefaultValues("car");
     }
   }
@@ -274,21 +399,26 @@
         ? await cancelledResponse.json()
         : 0;
 
-      // Update UI
-      document.getElementById("total-orders").textContent = totalOrders.count;
-      document.getElementById("orders-pending").textContent =
-        pendingApplications.count;
-      document.getElementById("orders-approved").textContent =
-        confirmedApplications.count;
-      document.getElementById("orders-rejected").textContent =
-        rejectedApplications.count;
+      // Update UI - with safety checks
+      const totalElement = document.getElementById("total-orders");
+      const pendingElement = document.getElementById("orders-pending");
+      const approvedElement = document.getElementById("orders-approved");
+      const rejectedElement = document.getElementById("orders-rejected");
 
-      // Create chart
-      createOrderChart([
-        pendingApplications.count,
-        confirmedApplications.count,
-        rejectedApplications.count,
-      ]);
+      if (totalElement) totalElement.textContent = totalOrders.count;
+      if (pendingElement) pendingElement.textContent = pendingApplications.count;
+      if (approvedElement) approvedElement.textContent = confirmedApplications.count;
+      if (rejectedElement) rejectedElement.textContent = rejectedApplications.count;
+
+      // Create chart only if we're still on the dashboard page
+      const chartCanvas = document.getElementById("orderChart");
+      if (chartCanvas) {
+        createOrderChart([
+          pendingApplications.count,
+          confirmedApplications.count,
+          rejectedApplications.count,
+        ]);
+      }
     } catch (error) {
       console.error("Error loading order data:", error);
       setDefaultValues("order");

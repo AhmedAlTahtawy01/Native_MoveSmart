@@ -243,18 +243,48 @@ function validate() {
 async function loadCars() {
 
   try {
-    const response = await fetch(
-      "https://movesmartapi.runasp.net/api/Vehicles/All",
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
+    let cars = [];
+    
+    // For PatrolsSupervisor, fetch buses instead of vehicles
+    if (userRole === "PatrolsSupervisor") {
+      try {
+        const response = await fetch(
+          "https://movesmartapi.runasp.net/api/Buses/All",
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const data = await response.json();
+        console.log("Buses data received:", data);
+        
+        // Map buses to the expected format for the dropdown
+        const buses = Array.isArray(data.$values) ? data.$values : [];
+        cars = buses.map(bus => ({
+          vehicleID: bus.busID,
+          plateNumbers: bus.vehicle.plateNumbers,
+          isBus: true
+        }));
+      } catch (error) {
+        console.error("خطأ في جلب الباصات:", error);
       }
-    );
-    const data = await response.json();
-
-    console.log("البيانات المستلمة:", data);
-
-    const cars = Array.isArray(data.$values) ? data.$values : [];
+    } else {
+      // For other roles, fetch vehicles
+      try {
+        const response = await fetch(
+          "https://movesmartapi.runasp.net/api/Vehicles/All",
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const data = await response.json();
+        console.log("Vehicles data received:", data);
+        cars = Array.isArray(data.$values) ? data.$values : [];
+      } catch (error) {
+        console.error("خطأ في جلب السيارات:", error);
+      }
+    }
 
     displayCars(cars);
   } catch (error) {
@@ -264,12 +294,18 @@ async function loadCars() {
 
 function displayCars(cars) {
   const select = document.getElementById("vehicleID");
-  select.innerHTML = '<option value="">-- اختر السيارة --</option>';
+  
+  // Set appropriate placeholder text based on user role
+  if (userRole === "PatrolsSupervisor") {
+    select.innerHTML = '<option value="">-- اختر الباص --</option>';
+  } else {
+    select.innerHTML = '<option value="">-- اختر السيارة --</option>';
+  }
 
   cars.forEach((car) => {
     const option = document.createElement("option");
     option.value = car.vehicleID;
-    option.textContent = car.plateNumbers; // غيّرها حسب اسم الخاصية الفعلي من الـ API
+    option.textContent = car.plateNumbers;
     select.appendChild(option);
   });
 }

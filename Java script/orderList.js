@@ -691,20 +691,60 @@ function getStatusClass(code) {
 // Function to fetch vehicles from API
 async function fetchVehicles() {
   try {
-    const response = await fetch("https:movesmartapi.runasp.net/api/Vehicles/All", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    let vehicles = [];
+    
+    // For PatrolsSupervisor, fetch buses instead of vehicles
+    if (userRole === "PatrolsSupervisor") {
+      try {
+        const response = await fetch("https://movesmartapi.runasp.net/api/Buses/All", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const buses = data.$values || data || [];
+        
+        // Map buses to the expected vehicle format
+        vehicles = buses.map(bus => ({
+          vehicleID: bus.busID,
+          plateNumbers: bus.vehicle.plateNumbers,
+          model: bus.vehicle.modelName,
+          brand: bus.vehicle.brandName,
+          isBus: true
+        }));
+      } catch (error) {
+        console.error("Error fetching buses:", error);
+        return [];
+      }
+    } else {
+      // For other roles, fetch vehicles
+      try {
+        const response = await fetch("https://movesmartapi.runasp.net/api/Vehicles/All", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        vehicles = data.$values || data || [];
+      } catch (error) {
+        console.error("Error fetching vehicles:", error);
+        return [];
+      }
     }
-
-    const data = await response.json();
-    return data.$values || data || [];
+    
+    return vehicles;
   } catch (error) {
-    console.error("Error fetching vehicles:", error);
+    console.error("Error in fetchVehicles:", error);
     return [];
   }
 }

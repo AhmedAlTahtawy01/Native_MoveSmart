@@ -17,13 +17,6 @@
 
     <div class="actions">
       <input type="text" id="search" placeholder="بحث..." onkeyup="searchEmployee()" />
-      <select id="filter-select" onchange="filterEmployee()">
-        <option value="all" selected>الجميع</option>
-        <option value="0">صالح</option>
-        <option value="1">منتهي الصلاحية</option>
-        <option value="2">غير مشترك</option>
-      </select>
-
       <button onclick="openPop()">+ إضافة موظف</button>
       <button onclick="loadEmployee()">🔄 تحديث</button>
     </div>
@@ -32,7 +25,6 @@
       <span>اسم الموظف</span>
       <span>المسمى الوظيفي</span>
       <span>رقم الهاتف</span>
-      <span>حالة الاشتراك</span>
     </div>
 
     <div id="employee-container" class="cards-container"></div>
@@ -54,14 +46,6 @@
 
       <input type="text" id="employee-phone" placeholder="رقم الهاتف" />
       <small id="error-employee-phone" class="error"></small>
-
-      <select id="transportation-subscription-status">
-        <option value="">-- اختر حالة الاشتراك --</option>
-        <option value="0">صالح</option>
-        <option value="1">منتهي الصلاحية</option>
-        <option value="2">غير مشترك</option>
-      </select>
-      <small id="error-transportation-subscription-status" class="error"></small>
 
       <div class="pop-actions">
         <button onclick="submitEmployee()">حفظ</button>
@@ -88,14 +72,6 @@
 
       <input type="text" id="edit-employee-phone" placeholder="رقم الهاتف" />
       <small id="error-edit-employee-phone" class="error"></small>
-
-      <select id="edit-transportation-subscription-status">
-        <option value="">-- اختر حالة الاشتراك --</option>
-        <option value="0">صالح</option>
-        <option value="1">منتهي الصلاحية</option>
-        <option value="2">غير مشترك</option>
-      </select>
-      <small id="error-edit-transportation-subscription-status" class="error"></small>
 
       <div class="pop-actions">
         <button onclick="updateEmployee()">تحديث</button>

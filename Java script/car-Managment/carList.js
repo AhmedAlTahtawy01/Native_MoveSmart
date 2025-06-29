@@ -69,25 +69,27 @@ if (typeof allowedRoles === 'undefined') {
 async function loadCars() {
 
   try {
-    // جلب الفيكيلز
+    // Get vehicles for all users except PatrolsSupervisor
     let vehicles = [];
-    try {
-      const vRes = await fetch(
-        "https://movesmartapi.runasp.net/api/Vehicles/All",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+    if (userRole !== "PatrolsSupervisor") {
+      try {
+        const vRes = await fetch(
+          "https://movesmartapi.runasp.net/api/Vehicles/All",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (vRes.ok) {
+          const vData = await vRes.json();
+          vehicles = Array.isArray(vData.$values) ? vData.$values : [];
         }
-      );
-      if (vRes.ok) {
-        const vData = await vRes.json();
-        vehicles = Array.isArray(vData.$values) ? vData.$values : [];
+      } catch (e) {
+        vehicles = [];
       }
-    } catch (e) {
-      vehicles = [];
     }
 
     // جلب الباصات

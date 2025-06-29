@@ -18,43 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
 // Global variable declaration to prevent redeclaration errors
 var employees = [];
 
-// Transportation Subscription Status Enum - only declare if not already declared
-if (typeof window.TransportationSubscriptionStatus === 'undefined') {
-    window.TransportationSubscriptionStatus = {
-        Valid: 0,
-        Expired: 1,
-        Unsubscribed: 2
-    };
-}
-
-// Get status text in Arabic
-function getStatusText(status) {
-    switch (parseInt(status)) {
-        case window.TransportationSubscriptionStatus.Valid:
-            return 'صالح';
-        case window.TransportationSubscriptionStatus.Expired:
-            return 'منتهي الصلاحية';
-        case window.TransportationSubscriptionStatus.Unsubscribed:
-            return 'غير مشترك';
-        default:
-            return 'غير محدد';
-    }
-}
-
-// Get status CSS class
-function getStatusClass(status) {
-    switch (parseInt(status)) {
-        case window.TransportationSubscriptionStatus.Valid:
-            return 'active';
-        case window.TransportationSubscriptionStatus.Expired:
-            return 'expired';
-        case window.TransportationSubscriptionStatus.Unsubscribed:
-            return 'unsubscribed';
-        default:
-            return '';
-    }
-}
-
 function openPop() {
   document.getElementById("add-pop").classList.remove("hidden");
   clearAddForm();
@@ -71,7 +34,6 @@ function clearAddForm() {
   document.getElementById("national-no").value = "";
   document.getElementById("job-title").value = "";
   document.getElementById("employee-phone").value = "";
-  document.getElementById("transportation-subscription-status").value = "";
   clearAddErrors();
 }
 
@@ -89,7 +51,6 @@ async function submitEmployee() {
   const nationalNo = document.getElementById("national-no").value.trim();
   const jobTitle = document.getElementById("job-title").value.trim();
   const phone = document.getElementById("employee-phone").value.trim();
-  const transportationSubscriptionStatus = parseInt(document.getElementById("transportation-subscription-status").value);
 
   if (!validate()) {
     saveButton.disabled = false;
@@ -101,8 +62,7 @@ async function submitEmployee() {
     nationalNo,
     name,
     jobTitle,
-    phone,
-    transportationSubscriptionStatus
+    phone
   };
 
   try {
@@ -113,7 +73,6 @@ async function submitEmployee() {
     document.getElementById("national-no").value = "";
     document.getElementById("job-title").value = "";
     document.getElementById("employee-phone").value = "";
-    document.getElementById("transportation-subscription-status").value = "";
 
     // Show success message
     const successBox = document.getElementById("success-message");
@@ -185,21 +144,6 @@ function searchEmployee() {
   displayEmployee(filteredEmployees);
 }
 
-function filterEmployee() {
-  const selectedStatus = document.getElementById("filter-select").value;
-
-  if (selectedStatus === "all") {
-    displayEmployee(employees);
-    return;
-  }
-
-  const filteredEmployees = employees.filter(
-    (employee) => String(employee.transportationSubscriptionStatus) === selectedStatus
-  );
-
-  displayEmployee(filteredEmployees);
-}
-
 function displayEmployee(list) {
   const container = document.getElementById("employee-container");
   container.innerHTML = "";
@@ -212,9 +156,6 @@ function displayEmployee(list) {
       <p><strong></strong> ${employee.name}</p>
       <p><strong></strong> ${employee.jobTitle}</p>
       <p><strong></strong> ${employee.phone}</p>
-      <p class="status ${getStatusClass(employee.transportationSubscriptionStatus)}">
-        <strong></strong> ${getStatusText(employee.transportationSubscriptionStatus)}
-      </p>
     `;
 
     employeeCard.style.cursor = "pointer";
@@ -240,12 +181,11 @@ function validate() {
   const nationalNo = document.getElementById("national-no").value.trim();
   const jobTitle = document.getElementById("job-title").value.trim();
   const phone = document.getElementById("employee-phone").value.trim();
-  const transportationSubscriptionStatus = document.getElementById("transportation-subscription-status").value.trim();
 
   let isValid = true;
 
   // Clear previous errors
-  ["employee-name", "national-no", "job-title", "employee-phone", "transportation-subscription-status"].forEach(id => {
+  ["employee-name", "national-no", "job-title", "employee-phone"].forEach(id => {
     showFieldError(id, "");
   });
 
@@ -267,11 +207,6 @@ function validate() {
   if (!/^01[0125][0-9]{8}$/.test(phone)) {
     isValid = false;
     showFieldError("employee-phone", "رقم الهاتف يجب أن يبدأ بـ 01 ويكون 11 رقم.");
-  }
-
-  if (!transportationSubscriptionStatus) {
-    isValid = false;
-    showFieldError("transportation-subscription-status", "يرجى اختيار حالة الاشتراك.");
   }
 
   return isValid;
@@ -311,7 +246,6 @@ function openEditPop(employee) {
   document.getElementById('edit-national-no').value = employee.nationalNo;
   document.getElementById('edit-job-title').value = employee.jobTitle;
   document.getElementById('edit-employee-phone').value = employee.phone;
-  document.getElementById('edit-transportation-subscription-status').value = employee.transportationSubscriptionStatus;
   
   document.getElementById('edit-pop').classList.remove('hidden');
   clearEditErrors();
@@ -328,7 +262,6 @@ function clearEditForm() {
   document.getElementById('edit-national-no').value = '';
   document.getElementById('edit-job-title').value = '';
   document.getElementById('edit-employee-phone').value = '';
-  document.getElementById('edit-transportation-subscription-status').value = '';
   clearEditErrors();
 }
 
@@ -342,12 +275,11 @@ function validateEdit() {
   const nationalNo = document.getElementById('edit-national-no').value.trim();
   const jobTitle = document.getElementById('edit-job-title').value.trim();
   const phone = document.getElementById('edit-employee-phone').value.trim();
-  const transportationSubscriptionStatus = document.getElementById('edit-transportation-subscription-status').value.trim();
 
   let isValid = true;
 
   // Clear previous errors
-  ["edit-employee-name", "edit-national-no", "edit-job-title", "edit-employee-phone", "edit-transportation-subscription-status"].forEach(id => {
+  ["edit-employee-name", "edit-national-no", "edit-job-title", "edit-employee-phone"].forEach(id => {
     showFieldError(id, "");
   });
 
@@ -371,11 +303,6 @@ function validateEdit() {
     showFieldError("edit-employee-phone", "رقم الهاتف يجب أن يبدأ بـ 01 ويكون 11 رقم.");
   }
 
-  if (!transportationSubscriptionStatus) {
-    isValid = false;
-    showFieldError("edit-transportation-subscription-status", "يرجى اختيار حالة الاشتراك.");
-  }
-
   return isValid;
 }
 
@@ -394,8 +321,7 @@ async function updateEmployee() {
     nationalNo: document.getElementById('edit-national-no').value.trim(),
     name: document.getElementById('edit-employee-name').value.trim(),
     jobTitle: document.getElementById('edit-job-title').value.trim(),
-    phone: document.getElementById('edit-employee-phone').value.trim(),
-    transportationSubscriptionStatus: parseInt(document.getElementById('edit-transportation-subscription-status').value)
+    phone: document.getElementById('edit-employee-phone').value.trim()
   };
 
   try {
