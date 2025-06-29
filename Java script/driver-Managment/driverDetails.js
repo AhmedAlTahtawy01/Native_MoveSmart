@@ -1,3 +1,4 @@
+console.log(window.token, window.userRole, window.userName, window.role);
 document.addEventListener("DOMContentLoaded", function () {
   const saveButton = document.querySelector(".save-btn");
   const deleteButton = document.querySelector(".delete-btn");
@@ -23,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     const urlParams = new URLSearchParams(window.location.search);
     const driverID = urlParams.get("id");
-    const token = localStorage.getItem("token");
     fetch(`https://movesmartapi.runasp.net/api/Drivers/ByID/${driverID}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
@@ -60,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
     saveButton.addEventListener("click", function () {
       const urlParams = new URLSearchParams(window.location.search);
       const driverID = Number(urlParams.get("id")); // تأكد إنه رقم
-      const token = localStorage.getItem("token");
 
       // تحويل الحالة من نص إلى رقم
       const statusText = document.querySelector('input[name="status"]').value;
@@ -188,8 +187,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("substitute-driver").value;
       const urlParams = new URLSearchParams(window.location.search);
       const vacationOwnerID = Number(urlParams.get("id"));
-      const token = localStorage.getItem("token");
-
       if (fromDate && toDate && vacationOwnerID && substituteDriverID) {
         const vacationData = {
           vacationOwnerID: vacationOwnerID,
@@ -247,7 +244,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
   function loadSubstituteDrivers() {
-    const token = localStorage.getItem("token");
     const select = document.getElementById("substitute-driver");
 
     fetch("https://movesmartapi.runasp.net/api/Drivers/All", {
@@ -274,7 +270,6 @@ document.addEventListener("DOMContentLoaded", function () {
   function loadDriverVacations() {
     const urlParams = new URLSearchParams(window.location.search);
     const driverID = Number(urlParams.get("id"));
-    const token = localStorage.getItem("token");
 
     fetch(
       `https://movesmartapi.runasp.net/api/Vacations/ForDriver/${driverID}`,

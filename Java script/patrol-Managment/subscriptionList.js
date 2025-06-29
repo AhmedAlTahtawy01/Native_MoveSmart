@@ -1,3 +1,4 @@
+console.log(window.token, window.userRole, window.userName, window.role);
 let allSubscribers = [];
 
 async function fetchSubscribers() {
@@ -182,8 +183,6 @@ async function saveNewSubscriber() {
 
 // ✅ Main init
 (async function init() {
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("userRole");
 
   if (!token) {
     window.location.href = "../Login.html";

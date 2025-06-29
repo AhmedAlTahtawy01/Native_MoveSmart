@@ -1,7 +1,6 @@
+console.log(window.token, window.userRole, window.userName, window.role);
 // Navigation functionality
 document.addEventListener("DOMContentLoaded", function () {
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("userRole");
 
   if (!token) {
     window.location.href = "../../Login.html";
@@ -52,8 +51,6 @@ if (typeof allowedRoles === 'undefined') {
 
 // تحميل السيارات والباصات معًا
 async function loadCars() {
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("userRole");
 
   try {
     // جلب الفيكيلز
@@ -254,8 +251,6 @@ function toggleAddType() {
 function submitVehicle() {
   const type = document.getElementById("add-type-select").value;
   if (!validate(type)) return;
-
-  const token = localStorage.getItem("token");
 
   if (type === "vehicle") {
     // نفس الكود القديم

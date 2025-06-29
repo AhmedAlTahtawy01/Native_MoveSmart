@@ -1,7 +1,8 @@
+window.token = localStorage.getItem("token");
+window.userRole = localStorage.getItem("userRole");
+window.userName = localStorage.getItem("userName");
+window.role = localStorage.getItem("userRole")
 document.addEventListener("DOMContentLoaded", function () {
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("userRole");
-  const userName = localStorage.getItem("userName");
 
   if (!token) {
     window.location.href = "../Login.html";
@@ -11,7 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // عرض اسم المستخدم
   const userNameElement = document.getElementById("userName");
   userNameElement.textContent = userName || "User";
-
   // إعداد زر تسجيل الخروج
   const logoutButton = document.getElementById("logoutButton");
   if (logoutButton) {

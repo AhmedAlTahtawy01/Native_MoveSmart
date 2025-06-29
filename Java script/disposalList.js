@@ -1,7 +1,6 @@
+console.log(window.token, window.userRole, window.userName, window.role);
 // Navigation functionality
 document.addEventListener("DOMContentLoaded", function () {
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("userRole");
 
   if (!token) {
     window.location.href = "../Login.html";
@@ -90,7 +89,6 @@ async function fetchConsumables() {
       initializeElements();
     }
     
-    const token = localStorage.getItem("token");
     const res = await fetch(
       "https://movesmartapi.runasp.net/api/VehicleConsumable",
       {
@@ -191,7 +189,6 @@ async function deleteItem(index) {
   if (!confirmDelete) return;
 
   try {
-    const token = localStorage.getItem("token");
     const id = consumables[index].consumableId;
     await fetch(`https://movesmartapi.runasp.net/api/VehicleConsumable/${id}`, {
       method: "DELETE",
@@ -213,7 +210,6 @@ async function addItem() {
   };
 
   try {
-    const token = localStorage.getItem("token");
     const response = await fetch(
       "https://movesmartapi.runasp.net/api/VehicleConsumable",
       {
@@ -247,7 +243,6 @@ async function updatePart() {
   };
 
   try {
-    const token = localStorage.getItem("token");
     const response = await fetch(
       "https://movesmartapi.runasp.net/api/VehicleConsumable",
       {

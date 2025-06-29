@@ -1,3 +1,4 @@
+console.log(window.token, window.userRole, window.userName, window.role);
 document.addEventListener("DOMContentLoaded", async function () {
     // العناصر الأساسية
     const saveButton = document.querySelector(".save-btn");
@@ -30,7 +31,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     // جلب بيانات الموظف من الـ API
     async function fetchEmployeeById(id) {
         try {
-            const token = localStorage.getItem("token");
             const res = await fetch(`https://movesmartapi.runasp.net/api/Employees/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,

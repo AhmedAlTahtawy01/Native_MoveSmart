@@ -1,7 +1,6 @@
+console.log(window.token, window.userRole, window.userName, window.role);
 // Navigation functionality
 document.addEventListener('DOMContentLoaded', function () {
-  const token = localStorage.getItem('token');
-  const userRole = localStorage.getItem('userRole');
 
   if (!token) {
     window.location.href = '../../Login.html';
@@ -93,7 +92,6 @@ async function submitDriver() {
 
 async function loadDriver() {
   try {
-    const token = localStorage.getItem("token");
     const response = await fetch(
       "https://movesmartapi.runasp.net/api/Drivers/All",
       {
@@ -227,7 +225,6 @@ function validate() {
 async function loadCars() {
 
   try {
-    const token = localStorage.getItem("token");
     const response = await fetch(
       "https://movesmartapi.runasp.net/api/Vehicles/All",
       {
@@ -261,7 +258,6 @@ function displayCars(cars) {
 
 async function addDriver(newDriver) {
   try {
-    const token = localStorage.getItem("token");
     const response = await fetch(
       "https://movesmartapi.runasp.net/api/drivers",
       {

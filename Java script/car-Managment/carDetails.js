@@ -1,10 +1,10 @@
+console.log(window.token, window.userRole, window.userName, window.role);
 document.addEventListener("DOMContentLoaded", function () {
   const tabs = document.querySelectorAll(".tab");
   const tabContents = document.querySelectorAll(".tab-content");
   const saveButton = document.querySelector(".save-btn");
   const printButton = document.querySelector(".print-btn");
   const backButton = document.querySelector(".back-btn");
-  const token = localStorage.getItem("token");
   console.log("توكن:", token);
 
   function loadCarData() {
@@ -183,7 +183,6 @@ document.addEventListener("DOMContentLoaded", function () {
       ),
     };
 
-    const token = localStorage.getItem("token");
     fetch("https://movesmartapi.runasp.net/api/Vehicles", {
       method: "PUT",
       headers: {

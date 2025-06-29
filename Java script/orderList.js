@@ -1,11 +1,6 @@
+console.log(window.token, window.userRole, window.userName, window.role);
 // Navigation functionality
 console.log("Role from localStorage:", localStorage.getItem("userRole"));
-const userRole = localStorage.getItem("userRole");
-const token = localStorage.getItem("token");
-// API URLs
-const apiUrl = "https://movesmartapi.runasp.net/api/v1/JobOrder";
-const vehicleApiUrl = "https://movesmartapi.runasp.net/api/Vehicles/All";
-const driverApiUrl = "https://movesmartapi.runasp.net/api/Drivers/All";
 
 document.addEventListener("DOMContentLoaded", function () {
   if (!token) {
@@ -34,7 +29,6 @@ function hideElementIfExists(elementId) {
 // Function to decode JWT token and extract user ID
 function getUserIdFromToken() {
   try {
-    const token = localStorage.getItem("token");
     if (!token) return null;
 
     // Decode JWT token (split by '.' and decode the payload part)
@@ -242,12 +236,11 @@ function closeAddJobOrderForm() {
 
 async function fetchJobOrders() {
   try {
-    const token = localStorage.getItem("token");
     const [vehicles, drivers] = await Promise.all([
       fetchVehicles(),
       fetchDrivers(),
     ]);
-    const res = await fetch(apiUrl, {
+    const res = await fetch("https://movesmartapi.runasp.net/api/v1/JobOrder", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -530,8 +523,6 @@ function editJobOrder(order) {
 async function submitJobOrder(e) {
   e.preventDefault();
   const editId = e.target.dataset.editId;
-  const token = localStorage.getItem("token");
-
   // Combine date and time for start and end dates
   const startDate = document.getElementById("startDate").value;
   const startTime = document.getElementById("startTime").value;
@@ -576,7 +567,7 @@ async function submitJobOrder(e) {
 
   try {
     const method = editId ? "PUT" : "POST";
-    const url = editId ? `${apiUrl}/${editId}` : apiUrl;
+    const url = editId ? `"https://movesmartapi.runasp.net/api/v1/JobOrder"/${editId}` : "https://movesmartapi.runasp.net/api/v1/JobOrder";
 
     const response = await fetch(url, {
       method,
@@ -669,8 +660,7 @@ function getStatusClass(code) {
 // Function to fetch vehicles from API
 async function fetchVehicles() {
   try {
-    const token = localStorage.getItem("token");
-    const response = await fetch(vehicleApiUrl, {
+    const response = await fetch("https:movesmartapi.runasp.net/api/Vehicles/All", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -691,8 +681,7 @@ async function fetchVehicles() {
 // Function to fetch drivers from API
 async function fetchDrivers() {
   try {
-    const token = localStorage.getItem("token");
-    const response = await fetch(driverApiUrl, {
+    const response = await fetch("https://movesmartapi.runasp.net/api/Drivers/All", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -931,7 +920,6 @@ function closeAddPurchaseOrderForm() {
 
 // كل طلبات الشراء
 async function fetchPurchaseOrders() {
-  const token = localStorage.getItem("token");
   // جلب طلبات المستهلكات
   const consumableRes = await fetch(
     "https://movesmartapi.runasp.net/api/ConsumablePurchaseOrderService",
@@ -1007,7 +995,6 @@ function renderPurchaseOrderCards(orders) {
 }
 
 function showPurchaseOrderDetails(order) {
-  const role = localStorage.getItem("userRole");
   const status = order.application?.status;
   const popup = document.createElement("div");
   popup.className = "popup";
@@ -1456,7 +1443,6 @@ function renderWithdrawOrderCards(orders) {
   const container = document.getElementById("withdrawOrdersContainer");
   if (!container) return;
   container.innerHTML = "";
-  const role = localStorage.getItem("userRole");
 
   orders.forEach((order) => {
     const showCard =
@@ -1489,7 +1475,6 @@ function renderWithdrawOrderCards(orders) {
 }
 
 function showWithdrawOrderDetails(order) {
-  const role = localStorage.getItem("userRole");
   const status = order.application?.status;
   const popup = document.createElement("div");
   popup.className = "popup";
@@ -1866,7 +1851,6 @@ function renderMaintenanceRequestCards(requests) {
   const container = document.getElementById("maintenanceRequestsContainer");
   container.innerHTML = "";
 
-  const role = localStorage.getItem("userRole");
 
   requests.forEach((req) => {
     const card = document.createElement("div");
@@ -1931,7 +1915,7 @@ function mapApplicationStatus(status) {
 }
 
 // ✅ تعديل الطلب
-let editingApplicationId = null;
+var editingApplicationId = null;
 
 async function editMaintenanceRequest(id) {
   try {
@@ -2180,7 +2164,6 @@ async function fillMaintenanceVehicleSelect() {
 // ✅ حفظ الطلب (جديد أو تعديل)
 async function submitMaintenanceRequest(e) {
   e.preventDefault();
-  const token = localStorage.getItem("token");
   const userId = getUserIdFromToken();
 
   const vehicleId = parseInt(
@@ -2468,7 +2451,6 @@ async function submitActualMaintenance(event) {
 
 // استخراج vehicleID من الطلب المرتبط
 async function getVehicleIdByApplicationId(applicationId) {
-  const token = localStorage.getItem("token");
   try {
     const res = await fetch(
       `https://movesmartapi.runasp.net/api/MaintenanceApplications/${applicationId}`,

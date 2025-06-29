@@ -1,7 +1,6 @@
+console.log(window.token, window.userRole, window.userName, window.role);
 // Navigation functionality
 document.addEventListener('DOMContentLoaded', function () {
-  const token = localStorage.getItem('token');
-  const userRole = localStorage.getItem('userRole');
 
   if (!token) {
     window.location.href = '../Login.html';
@@ -94,7 +93,6 @@ async function fetchParts() {
       initializeElements();
     }
     
-    const token = localStorage.getItem("token");
     if (!token) {
       alert("يرجى تسجيل الدخول أولاً");
       window.location.href = "login.html";
@@ -212,7 +210,6 @@ async function deletePart(index) {
   if (!confirmDelete) return;
 
   try {
-    const token = localStorage.getItem("token");
     if (!token) {
       alert("يرجى تسجيل الدخول أولاً");
       window.location.href = "login.html";
@@ -239,7 +236,6 @@ async function addPart() {
   };
 
   try {
-    const token = localStorage.getItem("token");
     console.log(token);
     if (!token) {
       alert("يرجى تسجيل الدخول أولاً");
@@ -292,7 +288,6 @@ async function updatePart() {
 
   try {
     // const id = parts[editIndex].sparePartId;
-    const token = localStorage.getItem("token");
     if (!token) {
       alert("يرجى تسجيل الدخول أولاً");
       window.location.href = "login.html";
