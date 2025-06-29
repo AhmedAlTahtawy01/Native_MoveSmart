@@ -38,12 +38,16 @@
         drivers?.classList.add("hidden");
         patrols?.classList.add("hidden");
         subscriptions?.classList.add("hidden");
+        orders?.classList.add("hidden");
+
         break;
       case "AdministrativeSupervisor":
         patrols?.classList.add("hidden");
         subscriptions?.classList.add("hidden");
         consumables?.classList.add("hidden");
         spareParts?.classList.add("hidden");
+        orders?.classList.add("hidden");
+
       case "GeneralManager":
         // يشوف كل الكروت
         break;
