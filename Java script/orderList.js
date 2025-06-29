@@ -2956,3 +2956,33 @@ async function populateMissionVehiclesSelect() {
     select.innerHTML = "<option value=''>فشل في تحميل السيارات</option>";
   }
 }
+
+// ✅ دالة تحديث الطلبات - تعمل على تحديث التطبيق النشط حالياً
+function refreshRequests() {
+  console.log("🔄 تحديث الطلبات...");
+  
+  // التحقق من أي popup مفتوح حالياً وتحديثه
+  const activePopups = [
+    { id: "jobOrderPopup", fetchFunction: fetchJobOrders },
+    { id: "purchaseOrderPopup", fetchFunction: fetchPurchaseOrders },
+    { id: "withdrawOrderPopup", fetchFunction: fetchWithdrawOrders },
+    { id: "maintenanceRequestsPopup", fetchFunction: fetchMaintenanceRequests },
+    { id: "maintenanceRecordsPopup", fetchFunction: fetchMaintenanceRecords },
+    { id: "missionNotesPopup", fetchFunction: fetchMissionNotes },
+    { id: "missionOrderPopup", fetchFunction: fetchMissionOrders }
+  ];
+
+  // البحث عن الـ popup المفتوح وتحديثه
+  for (const popup of activePopups) {
+    const popupElement = document.getElementById(popup.id);
+    if (popupElement && !popupElement.classList.contains("hidden")) {
+      console.log(`🔄 تحديث ${popup.id}...`);
+      popup.fetchFunction();
+      return; // تحديث أول popup مفتوح فقط
+    }
+  }
+
+  // إذا لم يكن هناك popup مفتوح، عرض رسالة
+  console.log("ℹ️ لا يوجد تطبيق نشط للتحديث");
+  alert("لا يوجد تطبيق نشط للتحديث. يرجى فتح أحد التطبيقات أولاً.");
+}

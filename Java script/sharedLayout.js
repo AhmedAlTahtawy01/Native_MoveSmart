@@ -295,6 +295,15 @@ function cleanupGlobalVariables() {
     "maintenanceRecords",
   ];
 
+  // Common constants that might be redeclared
+  const commonConstants = [
+    "TransportationSubscriptionStatus",
+    "SubscriptionStatus",
+    "VehicleStatus",
+    "OrderStatus",
+    "UserRole"
+  ];
+
   // Don't clean up DOM element references as they need to be reinitialized
   // Only clean up data arrays and state variables
   commonVars.forEach((varName) => {
@@ -304,6 +313,18 @@ function cleanupGlobalVariables() {
       } catch (e) {
         // If deletion fails, set to undefined
         window[varName] = undefined;
+      }
+    }
+  });
+
+  // Clean up constants that might cause redeclaration errors
+  commonConstants.forEach((constName) => {
+    if (window.hasOwnProperty(constName)) {
+      try {
+        delete window[constName];
+      } catch (e) {
+        // If deletion fails, set to undefined
+        window[constName] = undefined;
       }
     }
   });

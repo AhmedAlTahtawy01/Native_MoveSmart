@@ -1,27 +1,46 @@
-console.log(window.token, window.userRole, window.userName, window.role);
+// Get authentication data from localStorage (only if not already declared)
+if (typeof token === 'undefined') {
+  var token = localStorage.getItem('token');
+}
+if (typeof userRole === 'undefined') {
+  var userRole = localStorage.getItem('userRole');
+}
+if (typeof userName === 'undefined') {
+  var userName = localStorage.getItem('userName');
+}
+
+console.log('=== CarList.js Authentication Debug ===');
+console.log('Token exists:', !!token);
+console.log('User Role:', userRole);
+console.log('User Name:', userName);
+console.log('=====================================');
+
 // Navigation functionality
 document.addEventListener("DOMContentLoaded", function () {
+  console.log('DOM Content Loaded - Checking authentication...');
 
   if (!token) {
-    window.location.href = "../../Login.html";
+    console.error('No token found - redirecting to login');
+    window.location.href = "../../Pages/Login.html";
     return;
   }
 
+  console.log('Authentication successful - loading cars...');
+
   // Add click event listener to the page title for navigation
   const pageTitle = document.querySelector("h2");
-  pageTitle.style.cursor = "pointer";
-  pageTitle.addEventListener("click", function () {
-    window.location.href = `../dash-Boards/${userRole.toLowerCase()}Dashboard.html`;
-  });
+  if (pageTitle) {
+    pageTitle.style.cursor = "pointer";
+    pageTitle.addEventListener("click", function () {
+      window.location.href = `../dash-Boards/${userRole.toLowerCase()}Dashboard.html`;
+    });
+  }
 });
 
 // Cleanup function to clear global variables when script is reloaded
 window.clearScriptVariables = function() {
   if (typeof allCars !== 'undefined') {
     delete window.allCars;
-  }
-  if (typeof userRole !== 'undefined') {
-    delete window.userRole;
   }
   if (typeof allowedRoles !== 'undefined') {
     delete window.allowedRoles;
@@ -31,9 +50,6 @@ window.clearScriptVariables = function() {
 // Check if variables already exist to prevent redeclaration
 if (typeof allCars === 'undefined') {
   var allCars = []; // كل العربيات (فيكيلز وباصات)
-}
-if (typeof userRole === 'undefined') {
-  var userRole = null;
 }
 
 // الرولز المسموح لها تشوف الكل

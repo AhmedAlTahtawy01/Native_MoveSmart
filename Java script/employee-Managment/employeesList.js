@@ -18,21 +18,23 @@ document.addEventListener('DOMContentLoaded', function () {
 // Global variable declaration to prevent redeclaration errors
 var employees = [];
 
-// Transportation Subscription Status Enum
-const TransportationSubscriptionStatus = {
-    Valid: 0,
-    Expired: 1,
-    Unsubscribed: 2
-};
+// Transportation Subscription Status Enum - only declare if not already declared
+if (typeof window.TransportationSubscriptionStatus === 'undefined') {
+    window.TransportationSubscriptionStatus = {
+        Valid: 0,
+        Expired: 1,
+        Unsubscribed: 2
+    };
+}
 
 // Get status text in Arabic
 function getStatusText(status) {
     switch (parseInt(status)) {
-        case TransportationSubscriptionStatus.Valid:
+        case window.TransportationSubscriptionStatus.Valid:
             return 'صالح';
-        case TransportationSubscriptionStatus.Expired:
+        case window.TransportationSubscriptionStatus.Expired:
             return 'منتهي الصلاحية';
-        case TransportationSubscriptionStatus.Unsubscribed:
+        case window.TransportationSubscriptionStatus.Unsubscribed:
             return 'غير مشترك';
         default:
             return 'غير محدد';
@@ -42,11 +44,11 @@ function getStatusText(status) {
 // Get status CSS class
 function getStatusClass(status) {
     switch (parseInt(status)) {
-        case TransportationSubscriptionStatus.Valid:
+        case window.TransportationSubscriptionStatus.Valid:
             return 'active';
-        case TransportationSubscriptionStatus.Expired:
+        case window.TransportationSubscriptionStatus.Expired:
             return 'expired';
-        case TransportationSubscriptionStatus.Unsubscribed:
+        case window.TransportationSubscriptionStatus.Unsubscribed:
             return 'unsubscribed';
         default:
             return '';
