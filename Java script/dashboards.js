@@ -30,6 +30,7 @@
         orders?.classList.add("hidden");
         consumables?.classList.add("hidden");
         spareParts?.classList.add("hidden");
+        cars?.classList.add("hidden")
         break;
 
       case "WorkshopSupervisor":

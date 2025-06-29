@@ -93,6 +93,23 @@ switch (userRole) {
   case "HospitalManager":
     document.getElementById("jobOrder-Btn").style.display = "none";
     break;
+  case "GeneralManager":
+    document.getElementById("jobOrder-Btn").style.display = "none";
+    break;
+  case "GeneralSupervisor":
+    document.getElementById("jobOrder-Btn").style.display = "none";
+    break;
+  case "AdministrativeSupervisor":
+    document.getElementById("purchaseOrder").style.display= "none"
+    document.getElementById("WithdrawOrder").style.display= "none"
+    document.getElementById("maintenanceRequestsCard").style.display= "none"
+    document.getElementById("actualMaintenanceCard").style.display= "none"
+    document.getElementById("missionNotesCard").style.display= "none"
+    break;
+  case "WorkshopSupervisor":
+    document.getElementById("jobOrder").style.display="none"
+    document.getElementById("missionNotesCard").style.display= "none"
+     document.getElementById("missionOrder").style.display= "none"
   default:
     break;
 }
@@ -115,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "purchaseOrder",
       "payOrder",
       "maintananceOrder",
+      "missionOrder"
     ],
     HospitalManager: ["jobOrder", "missionOrder"],
     GeneralManager: [
@@ -2726,7 +2744,7 @@ window.missionNotesApi = "https://movesmartapi.runasp.net/api/MissionsNotes/All"
 
 // ✅ إظهار الكارت حسب الدور
 if (
-  ["HospitalManager", "GeneralManager", "GeneralSupervisor"].includes(userRole)
+  ["HospitalManager", "GeneralManager", "GeneralSupervisor","AdministrativeSupervisor"].includes(userRole)
 ) {
   document
     .getElementById("missionOrder")
