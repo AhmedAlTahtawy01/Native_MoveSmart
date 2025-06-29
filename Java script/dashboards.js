@@ -229,11 +229,14 @@
             const usedConsumables = 30;
             const inOrderConsumables = 20;
             
-            // Update UI
-            document.getElementById('total-consumables').textContent = totalConsumables;
-            document.getElementById('consumables-available').textContent = availableConsumables;
-            document.getElementById('consumables-used').textContent = usedConsumables;
-            document.getElementById('consumables-inorder').textContent = inOrderConsumables;
+            // Update UI - using the correct element IDs from the HTML
+            const totalElement = document.getElementById('totalConsumables');
+            if (totalElement) {
+                totalElement.textContent = totalConsumables;
+            }
+            
+            // Note: The HTML doesn't have separate elements for available, used, in-order
+            // So we'll just update the total for now
             
             // Create chart
             createConsumableChart([availableConsumables, usedConsumables, inOrderConsumables]);
@@ -253,11 +256,14 @@
             const usedSpareParts = 50;
             const inOrderSpareParts = 30;
             
-            // Update UI
-            document.getElementById('total-spareParts').textContent = totalSpareParts;
-            document.getElementById('spareParts-available').textContent = availableSpareParts;
-            document.getElementById('spareParts-used').textContent = usedSpareParts;
-            document.getElementById('spareParts-inorder').textContent = inOrderSpareParts;
+            // Update UI - using the correct element ID from the HTML
+            const totalElement = document.getElementById('totalSpareParts');
+            if (totalElement) {
+                totalElement.textContent = totalSpareParts;
+            }
+            
+            // Note: The HTML doesn't have separate elements for available, used, in-order
+            // So we'll just update the total for now
             
             // Create chart
             createSparePartChart([availableSpareParts, usedSpareParts, inOrderSpareParts]);
@@ -277,14 +283,22 @@
             const availablePatrols = 12;
             const completedPatrols = 5;
             
-            // Update UI
-            document.getElementById('total-patrol').textContent = totalPatrols;
-            document.getElementById('working-patrol').textContent = workingPatrols;
-            document.getElementById('available-patrol').textContent = availablePatrols;
-            document.getElementById('onleave-patrol').textContent = completedPatrols;
+            // Update UI - check if elements exist before updating
+            const totalElement = document.getElementById('total-patrol');
+            const workingElement = document.getElementById('working-patrol');
+            const availableElement = document.getElementById('available-patrol');
+            const onleaveElement = document.getElementById('onleave-patrol');
             
-            // Create chart
-            createPatrolChart([workingPatrols, availablePatrols, completedPatrols]);
+            if (totalElement) totalElement.textContent = totalPatrols;
+            if (workingElement) workingElement.textContent = workingPatrols;
+            if (availableElement) availableElement.textContent = availablePatrols;
+            if (onleaveElement) onleaveElement.textContent = completedPatrols;
+            
+            // Create chart only if the chart element exists
+            const chartElement = document.getElementById('patrolChart');
+            if (chartElement) {
+                createPatrolChart([workingPatrols, availablePatrols, completedPatrols]);
+            }
             
         } catch (error) {
             console.error('Error loading patrol data:', error);

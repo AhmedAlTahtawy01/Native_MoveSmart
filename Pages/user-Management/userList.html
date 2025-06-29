@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Assets/Styles/sharedLayout.css">
     <link rel="stylesheet" href="../../Assets/Styles/userList.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logo.png">
     <title>User Management - Move Smart</title>
+
+    <link rel="icon" type="image/x-icon" href="../../Assets/Images/favicon_io/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../Assets/Images/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../Assets/Images/favicon_io/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="../../Assets/Images/favicon_io/apple-touch-icon.png">
+    
 </head>
 <body>
     <div class="topbar">
-        <div class="profile">
-            <span id="userName">Loading...</span>
-            <img class="user-icon" src="../../Assets/Images/users.svg" alt="User" />
-            <button id="logoutButton" class="logout-button">
-                <img src="../../Assets/Images/logout.svg" alt="Logout" />
-            </button>
-        </div>
-        <button class="notification"><img src="../../Assets/Images/bell.svg" alt="Notifications" /></button>
         <div class="search-container">
             <input type="text" placeholder="بحث بالاسم أو الرقم الوطني..." id="searchInput" />
             <img src="../../Assets/Images/search.svg" alt="Search" />
@@ -135,7 +132,24 @@
         </div>
     </div>
 
-    <script src="../../Java script/dashboards.js"></script>
+    <!-- Logout Confirmation Popup -->
+    <div id="logoutPopup" class="logout-popup">
+        <div class="logout-popup-content">
+            <div class="logout-popup-header">
+                <h3>تأكيد تسجيل الخروج</h3>
+            </div>
+            <div class="logout-popup-body">
+                <p>هل أنت متأكد من أنك تريد تسجيل الخروج من النظام؟</p>
+            </div>
+            <div class="logout-popup-footer">
+                <button id="confirmLogout" class="btn-confirm">
+                    نعم، تسجيل الخروج
+                </button>
+                <button id="cancelLogout" class="btn-cancel">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../../Java script/user-Management/userList.js"></script>
 </body>
 </html>
