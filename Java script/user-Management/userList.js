@@ -36,17 +36,11 @@ const roleEnumValues = {
 document.addEventListener('DOMContentLoaded', function() {
     // Check authentication
     const token = localStorage.getItem('token');
-    const userRole = localStorage.getItem('userRole');
-    const userName = localStorage.getItem('userName');
     
     if (!token) {
         window.location.href = '../Login.html';
         return;
     }
-
-    // Display the user's name
-    const userNameElement = document.getElementById('userName');
-    userNameElement.textContent = userName || 'User';
 
     // Initialize the page
     initializeUserList();
@@ -503,7 +497,7 @@ function closeDeleteModal() {
     userToDelete = null;
 }
 
-function saveUser() {
+async function saveUser() {
     const form = document.getElementById('userForm');
     if (!form.checkValidity()) {
         form.reportValidity();
@@ -512,7 +506,7 @@ function saveUser() {
     
     const formData = new FormData(form);
     const userData = {
-        username: formData.get('username'),
+        name: formData.get('username'),
         nationalNo: formData.get('nationalNo'),
         password: formData.get('password'),
         role: parseInt(formData.get('role'))
@@ -524,59 +518,167 @@ function saveUser() {
     );
     
     if (nationalNoExists) {
-        alert('الرقم الوطني مستخدم بالفعل');
+        showNotification('الرقم الوطني مستخدم بالفعل', 'error');
         return;
     }
     
-    if (editingUserId) {
-        // Update existing user
-        const userIndex = users.findIndex(u => u.id === editingUserId);
-        if (userIndex !== -1) {
-            users[userIndex] = {
-                ...users[userIndex],
-                username: userData.username,
-                nationalNo: userData.nationalNo,
-                role: userData.role
-            };
-            
-            // Only update password if provided
-            if (userData.password) {
-                users[userIndex].password = userData.password;
-            }
-        }
-    } else {
-        // Add new user
-        const newUser = {
-            id: Math.max(...users.map(u => u.id)) + 1,
-            username: userData.username,
-            nationalNo: userData.nationalNo,
-            role: userData.role,
-            joinDate: new Date().toISOString().split('T')[0],
-            status: 'active'
-        };
-        users.push(newUser);
+    const token = localStorage.getItem('token');
+    if (!token) {
+        showNotification('انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول', 'error');
+        window.location.href = '../Login.html';
+        return;
     }
     
-    // Refresh the display
-    filteredUsers = [...users];
-    renderUsersTable();
-    renderPagination();
-    closeUserModal();
-    
-    // Show success message
-    showNotification(editingUserId ? 'تم تحديث المستخدم بنجاح' : 'تم إضافة المستخدم بنجاح', 'success');
+    try {
+        // Show loading state
+        const saveButton = document.getElementById('saveButton');
+        const originalText = saveButton.textContent;
+        saveButton.textContent = 'جاري الحفظ...';
+        saveButton.disabled = true;
+        
+        if (editingUserId) {
+            // Update existing user - include original user data
+            const originalUser = users.find(u => u.id === editingUserId);
+            if (originalUser) {
+                // Merge original data with updates
+                const updateData = {
+                    ...userData,
+                    userId: editingUserId,
+                    id: editingUserId,
+                    UserId: editingUserId,
+                    // Include original fields that might be required
+                    joinDate: originalUser.joinDate,
+                    status: originalUser.status,
+                    accessRight: originalUser.accessRight
+                };
+                await updateUserAPI(editingUserId, updateData, token);
+            } else {
+                await updateUserAPI(editingUserId, userData, token);
+            }
+            showNotification('تم تحديث المستخدم بنجاح', 'success');
+        } else {
+            // Create new user
+            await createUserAPI(userData, token);
+            showNotification('تم إضافة المستخدم بنجاح', 'success');
+        }
+        
+        // Refresh the user list from API
+        await loadUsersFromAPI();
+        renderUsersTable();
+        renderPagination();
+        closeUserModal();
+        
+    } catch (error) {
+        console.error('Error saving user:', error);
+        
+        let errorMessage = 'حدث خطأ أثناء حفظ المستخدم';
+        if (error.message) {
+            errorMessage = error.message;
+        } else if (error.status === 400) {
+            errorMessage = 'بيانات غير صحيحة، يرجى التحقق من المدخلات';
+        } else if (error.status === 401) {
+            errorMessage = 'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول';
+            localStorage.removeItem('token');
+            window.location.href = '../Login.html';
+            return;
+        } else if (error.status === 409) {
+            errorMessage = 'الرقم الوطني مستخدم بالفعل';
+        } else if (error.status === 500) {
+            errorMessage = 'خطأ في الخادم، يرجى المحاولة مرة أخرى';
+        }
+        
+        showNotification(errorMessage, 'error');
+    } finally {
+        // Reset button state
+        const saveButton = document.getElementById('saveButton');
+        saveButton.textContent = editingUserId ? 'تحديث' : 'حفظ';
+        saveButton.disabled = false;
+    }
 }
 
-function confirmDeleteUser() {
+async function createUserAPI(userData, token) {
+    const response = await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData)
+    });
+    
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const error = new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        error.status = response.status;
+        error.data = errorData;
+        throw error;
+    }
+    
+    return await response.json();
+}
+
+async function updateUserAPI(userId, userData, token) {
+    // Try different field names that the API might expect for the user ID
+    const requestData = {
+        ...userData,
+        userId: userId,
+        id: userId,  // Try both userId and id fields
+        UserId: userId  // Try with capital U as well
+    };
+    
+    console.log('Sending update request with data:', requestData);
+    console.log('User ID being sent:', userId);
+    
+    const response = await fetch(`${API_BASE_URL}/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+    });
+    
+    console.log('Response status:', response.status);
+    
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.log('Error response data:', errorData);
+        const error = new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        error.status = response.status;
+        error.data = errorData;
+        throw error;
+    }
+    
+    return await response.json();
+}
+
+async function confirmDeleteUser() {
     if (!userToDelete) return;
     
-    const userIndex = users.findIndex(u => u.id === userToDelete);
-    if (userIndex !== -1) {
-        const userName = users[userIndex].username;
-        users.splice(userIndex, 1);
+    const user = users.find(u => u.id === userToDelete);
+    if (!user) {
+        closeDeleteModal();
+        return;
+    }
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+        showNotification('انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول', 'error');
+        window.location.href = '../Login.html';
+        return;
+    }
+    
+    try {
+        // Show loading state
+        const deleteButton = document.querySelector('.btn-confirm');
+        const originalText = deleteButton.textContent;
+        deleteButton.textContent = 'جاري الحذف...';
+        deleteButton.disabled = true;
         
-        // Refresh the display
-        filteredUsers = [...users];
+        await deleteUserAPI(userToDelete, token);
+        
+        // Refresh the user list from API
+        await loadUsersFromAPI();
         renderUsersTable();
         renderPagination();
         
@@ -588,10 +690,53 @@ function confirmDeleteUser() {
             renderPagination();
         }
         
-        showNotification(`تم حذف المستخدم "${userName}" بنجاح`, 'success');
+        showNotification(`تم حذف المستخدم "${user.username}" بنجاح`, 'success');
+        
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        
+        let errorMessage = 'حدث خطأ أثناء حذف المستخدم';
+        if (error.message) {
+            errorMessage = error.message;
+        } else if (error.status === 401) {
+            errorMessage = 'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول';
+            localStorage.removeItem('token');
+            window.location.href = '../Login.html';
+            return;
+        } else if (error.status === 404) {
+            errorMessage = 'المستخدم غير موجود';
+        } else if (error.status === 500) {
+            errorMessage = 'خطأ في الخادم، يرجى المحاولة مرة أخرى';
+        }
+        
+        showNotification(errorMessage, 'error');
+    } finally {
+        // Reset button state
+        const deleteButton = document.querySelector('.btn-confirm');
+        deleteButton.textContent = 'تأكيد الحذف';
+        deleteButton.disabled = false;
+        closeDeleteModal();
+    }
+}
+
+async function deleteUserAPI(userId, token) {
+    const response = await fetch(`${API_BASE_URL}/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        }
+    });
+    
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const error = new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        error.status = response.status;
+        error.data = errorData;
+        throw error;
     }
     
-    closeDeleteModal();
+    return await response.json();
 }
 
 // Utility Functions
