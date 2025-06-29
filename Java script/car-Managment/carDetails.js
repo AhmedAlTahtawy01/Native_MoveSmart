@@ -304,8 +304,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((res) => {
         if (res.ok) {
           alert("تم حذف المركبة بنجاح.");
-          window.location.href =
-            type === "bus" ? "busesList.html" : "carsList.html";
+          window.location.href = "../../Pages/car-Managment/carList.html";
         } else {
           return res.text().then((text) => {
             throw new Error(text);
