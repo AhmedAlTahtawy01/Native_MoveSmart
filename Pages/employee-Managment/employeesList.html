@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إدارة الموظفين</title>
+  <link rel="stylesheet" href="../../Assets/Styles/employee-Managment/employeesList.css" />
+</head>
+
+<body>
+  <div class="container">
+    <h2>الموظفين</h2>
+    <p class="total-employees">
+      إجمالي الموظفين: <span id="total-count">0</span>
+    </p>
+
+    <div class="actions">
+      <input type="text" id="search" placeholder="بحث..." onkeyup="searchEmployee()" />
+      <select id="filter-select" onchange="filterEmployee()">
+        <option value="all" selected>الجميع</option>
+        <option value="0">صالح</option>
+        <option value="1">منتهي الصلاحية</option>
+        <option value="2">غير مشترك</option>
+      </select>
+
+      <button onclick="openPop()">+ إضافة موظف</button>
+      <button onclick="loadEmployee()">🔄 تحديث</button>
+    </div>
+
+    <div class="table-header">
+      <span>اسم الموظف</span>
+      <span>المسمى الوظيفي</span>
+      <span>رقم الهاتف</span>
+      <span>حالة الاشتراك</span>
+    </div>
+
+    <div id="employee-container" class="cards-container"></div>
+  </div>
+  <!-- add employee popup modal -->
+  <div id="add-pop" class="pop hidden">
+    <div class="pop-content">
+      <div id="success-message" class="success-message hidden"> تم الحفظ بنجاح</div>
+      <h3>إضافة موظف جديد</h3>
+
+      <input type="text" id="employee-name" placeholder="اسم الموظف" />
+      <small id="error-employee-name" class="error"></small>
+
+      <input type="text" id="national-no" placeholder="الرقم القومي" />
+      <small id="error-national-no" class="error"></small>
+
+      <input type="text" id="job-title" placeholder="المسمى الوظيفي" />
+      <small id="error-job-title" class="error"></small>
+
+      <input type="text" id="employee-phone" placeholder="رقم الهاتف" />
+      <small id="error-employee-phone" class="error"></small>
+
+      <select id="transportation-subscription-status">
+        <option value="">-- اختر حالة الاشتراك --</option>
+        <option value="0">صالح</option>
+        <option value="1">منتهي الصلاحية</option>
+        <option value="2">غير مشترك</option>
+      </select>
+      <small id="error-transportation-subscription-status" class="error"></small>
+
+      <div class="pop-actions">
+        <button onclick="submitEmployee()">حفظ</button>
+        <button onclick="closePop()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+  <!-- edit employee popup modal -->
+  <div id="edit-pop" class="pop hidden">
+    <div class="pop-content">
+      <div id="edit-success-message" class="success-message hidden"> تم التحديث بنجاح</div>
+      <h3>تعديل موظف</h3>
+
+      <input type="hidden" id="edit-employee-id" />
+
+      <input type="text" id="edit-employee-name" placeholder="اسم الموظف" />
+      <small id="error-edit-employee-name" class="error"></small>
+
+      <input type="text" id="edit-national-no" placeholder="الرقم القومي" />
+      <small id="error-edit-national-no" class="error"></small>
+
+      <input type="text" id="edit-job-title" placeholder="المسمى الوظيفي" />
+      <small id="error-edit-job-title" class="error"></small>
+
+      <input type="text" id="edit-employee-phone" placeholder="رقم الهاتف" />
+      <small id="error-edit-employee-phone" class="error"></small>
+
+      <select id="edit-transportation-subscription-status">
+        <option value="">-- اختر حالة الاشتراك --</option>
+        <option value="0">صالح</option>
+        <option value="1">منتهي الصلاحية</option>
+        <option value="2">غير مشترك</option>
+      </select>
+      <small id="error-edit-transportation-subscription-status" class="error"></small>
+
+      <div class="pop-actions">
+        <button onclick="updateEmployee()">تحديث</button>
+        <button onclick="closeEditPop()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="../../Java script/employee-Managment/employessList.js"></script>
+</body>
+
+</html>

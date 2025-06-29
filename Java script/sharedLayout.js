@@ -213,8 +213,8 @@ function changeContent(page) {
       break;
 
     case "employees":
-      pagePath = "employee-Managment/employeeList.html";
-      scriptPath = "../../Java script/employee-Managment/employeeList.js";
+      pagePath = "employee-Managment/employeesList.html";
+      scriptPath = "../../Java script/employee-Managment/employeesList.js";
       break;
 
     default:
