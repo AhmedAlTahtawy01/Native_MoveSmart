@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           <td>${emp.name}</td>
           <td>${emp.jobTitle}</td>
           <td>${emp.phone}</td>
-          <td><button onclick="window.location.href='../../Pages/patrol-Managment/subscriptionDetail.html?id=${emp.employeeID}'">عرض التفاصيل</button></td>
+          <td><button onclick="window.location.href='../../Pages/employee-Managment/employeeDetails.html?id=${emp.employeeID}'">عرض التفاصيل</button></td>
         `;
         tbody.appendChild(tr);
       });
