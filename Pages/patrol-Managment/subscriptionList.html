@@ -12,12 +12,12 @@
     <div class="subscription-container">
       <div class="subscription-header">
         <div class="subscription-actions">
-          <button id="addSubscriber">➕ إضافة مشترك</button>
+          <button id="addSubscriber">➕ إضافة اشتراك</button>
           <button id="filterBtn">🔽 فلتر</button>
           <button id="refreshBtn">🔄 تحديث</button>
         </div>
         <div class="subscription-total">
-          إجمالي المشتركين <span id="totalCount">40</span>
+          إجمالي المشتركين <span id="totalCount">0</span>
         </div>
       </div>
 
@@ -46,7 +46,7 @@
           </tr>
         </thead>
         <tbody id="subscriberList">
-          <!-- Cards will be injected by JS -->
+          <!-- Data will be rendered here -->
         </tbody>
       </table>
     </div>
@@ -54,29 +54,23 @@
     <!-- Popup -->
     <div id="popup" class="subscription-popup hidden">
       <div class="subscription-popup-content">
-        <h2>إضافة مشترك جديد</h2>
+        <h2>إضافة اشتراك</h2>
         <div id="notification" class="subscription-notification hidden"></div>
         <div class="subscription-form-grid">
           <div>
-            <label for="newPhone">رقم المحمول</label>
-            <input type="text" id="newPhone" />
+            <label for="employeeSelect">الموظف</label>
+            <select id="employeeSelect"></select>
           </div>
           <div>
-            <label for="newName">الاسم</label>
-            <input type="text" id="newName" />
-          </div>
-          <div>
-            <label for="newJob">المسمى الوظيفي</label>
-            <input type="text" id="newJob" />
-          </div>
-          <div>
-            <label for="newId">الرقم القومي</label>
-            <input type="text" id="newId" />
+            <label for="patrolSelect">الدورية</label>
+            <select id="patrolSelect"></select>
           </div>
         </div>
         <button onclick="saveNewSubscriber()">حفظ</button>
+        <button onclick="closePopup()">إلغاء</button>
       </div>
     </div>
+
     <script src="../../Java script/patrol-Managment/subscriptionList.js"></script>
   </body>
 </html>

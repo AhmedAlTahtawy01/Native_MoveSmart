@@ -1,62 +1,16 @@
 console.log(window.token, window.userRole, window.userName, window.role);
-let allSubscribers = [];
 
-async function fetchSubscribers() {
-  try {
-    const response = await fetch(
-      "https://movesmartapi.runasp.net/api/Employees/All",
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-
-    if (!response.ok) throw new Error("فشل في جلب البيانات");
-
-    const data = await response.json();
-    allSubscribers = data.$values || [];
-    renderSubscribers(allSubscribers);
-  } catch (error) {
-    console.error(error);
-    showNotification("حدث خطأ أثناء تحميل المشتركين");
-  }
+if (typeof window.allSubscribers === "undefined") {
+  window.allSubscribers = [];
 }
-
-function renderSubscribers(list) {
-  const tbody = document.getElementById("subscriberList");
-  tbody.innerHTML = "";
-
-  list.forEach((sub) => {
-    const statusText =
-      sub.transportationSubscriptionStatus === 1 ? "متاحة" : "منتهية";
-    const statusClass =
-      sub.transportationSubscriptionStatus === 1
-        ? "status-active"
-        : "status-ended";
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>≡</td>
-      <td>${sub.phone}</td>
-      <td><span class="${statusClass}">${statusText}</span></td>
-      <td>${sub.name}</td>
-    `;
-    // عند الضغط على الصف انتقل لصفحة التفاصيل مع تمرير employeeID
-    tr.style.cursor = "pointer";
-    tr.onclick = () => {
-      window.location.href = `subscriptionDetail.html?id=${sub.employeeID}`;
-    };
-    tbody.appendChild(tr);
-  });
-
-  document.getElementById("totalCount").textContent = list.length;
+if (typeof window.allEmployeesMap === "undefined") {
+  window.allEmployeesMap = new Map();
 }
-
 document.getElementById("refreshBtn").onclick = fetchSubscribers;
 
 document.getElementById("addSubscriber").onclick = () => {
   document.getElementById("popup").classList.remove("hidden");
+  loadEmployeesAndPatrols();
 };
 
 function closePopup() {
@@ -79,14 +33,14 @@ function toggleStatusFilter() {
 
 function filterByName() {
   const name = document.getElementById("nameInput").value.trim();
-  const filtered = allSubscribers.filter((s) => s.name.includes(name));
+  const filtered = allSubscribers.filter((s) => s.name?.includes(name));
   renderSubscribers(filtered);
   document.getElementById("filterMenu").classList.add("hidden");
   document.getElementById("nameFilter").classList.add("hidden");
 }
 
 function filterByStatus(statusText) {
-  const status = statusText === "متاحة" ? 1 : 0;
+  const status = statusText === "متاحة" ? 0 : 1;
   const filtered = allSubscribers.filter(
     (s) => s.transportationSubscriptionStatus === status
   );
@@ -99,91 +53,199 @@ function showNotification(message) {
   const note = document.getElementById("notification");
   note.textContent = message;
   note.classList.remove("hidden");
-
   setTimeout(() => {
     note.classList.add("hidden");
   }, 3000);
 }
 
+async function fetchSubscribers() {
+  try {
+    // 1. تحميل الموظفين
+    const empRes = await fetch(
+      "https://movesmartapi.runasp.net/api/Employees/All",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    const empData = await empRes.json();
+    const employees = empData.$values || [];
+
+    // تخزين الموظفين في Map
+    allEmployeesMap.clear();
+    employees.forEach((emp) => {
+      allEmployeesMap.set(emp.employeeID, emp);
+    });
+
+    // 2. تحميل الاشتراكات
+    const response = await fetch(
+      "https://movesmartapi.runasp.net/api/PatrolsSubscriptions/All",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (!response.ok) throw new Error("فشل في جلب البيانات");
+
+    const data = await response.json();
+    const rawList = data.$values || [];
+
+    // إزالة التكرارات حسب employeeID ودمج بيانات الموظف
+    const uniqueMap = new Map();
+    rawList.forEach((sub) => {
+      if (!uniqueMap.has(sub.employeeID)) {
+        const emp = allEmployeesMap.get(sub.employeeID);
+        if (emp) {
+          sub.name = emp.name;
+          sub.phone = emp.phone;
+        } else {
+          sub.name = "غير معروف";
+          sub.phone = "غير معروف";
+        }
+        uniqueMap.set(sub.employeeID, sub);
+      }
+    });
+
+    allSubscribers = Array.from(uniqueMap.values());
+    renderSubscribers(allSubscribers);
+  } catch (error) {
+    console.error(error);
+    showNotification("حدث خطأ أثناء تحميل المشتركين");
+  }
+}
+
+function renderSubscribers(list) {
+  const tbody = document.getElementById("subscriberList");
+  tbody.innerHTML = "";
+
+  list.forEach((sub) => {
+    const statusText =
+      sub.transportationSubscriptionStatus === 0 ? "متاحة" : "منتهية";
+    const statusClass =
+      sub.transportationSubscriptionStatus === 1
+        ? "status-active"
+        : "status-ended";
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>≡</td>
+      <td>${sub.phone || "—"}</td>
+      <td><span class="${statusClass}">${statusText}</span></td>
+      <td>${sub.name || "—"}</td>
+    `;
+    tr.style.cursor = "pointer";
+    tr.onclick = () => {
+      window.location.href = `patrol-Managment/subscriptionDetail.html?id=${sub.employeeID}`;
+    };
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("totalCount").textContent = list.length;
+}
+
+async function loadEmployeesAndPatrols() {
+  try {
+    // جلب الموظفين
+    const empRes = await fetch(
+      "https://movesmartapi.runasp.net/api/Employees/All",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    const empData = await empRes.json();
+    const employees = empData.$values || [];
+
+    const empSelect = document.getElementById("employeeSelect");
+    empSelect.innerHTML =
+      '<option disabled selected value="">اختر موظفًا</option>';
+    employees.forEach((emp) => {
+      const option = document.createElement("option");
+      option.value = emp.employeeID;
+      option.textContent = emp.name;
+      empSelect.appendChild(option);
+    });
+
+    // جلب الدوريات
+    const patrolRes = await fetch(
+      "https://movesmartapi.runasp.net/api/Patrols/All",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    const patrolData = await patrolRes.json();
+    const patrols = patrolData.$values || [];
+
+    const patrolSelect = document.getElementById("patrolSelect");
+    patrolSelect.innerHTML =
+      '<option disabled selected value="">اختر الدورية</option>';
+    patrols.forEach((patrol) => {
+      const option = document.createElement("option");
+      option.value = patrol.patrolID;
+      option.textContent = `دورية ${patrol.patrolID} - ${
+        (patrol.movingAt || "").split("T")[0]
+      }`;
+      patrolSelect.appendChild(option);
+    });
+  } catch (err) {
+    console.error(err);
+    showNotification("خطأ في تحميل الموظفين أو الدوريات");
+  }
+}
+
 async function saveNewSubscriber() {
-  const nameInput = document.getElementById("newName");
-  const phoneInput = document.getElementById("newPhone");
-  const jobInput = document.getElementById("newJob");
-  const idInput = document.getElementById("newId");
+  const empID = document.getElementById("employeeSelect").value;
+  const patrolID = document.getElementById("patrolSelect").value;
 
-  [nameInput, phoneInput, jobInput, idInput].forEach((input) =>
-    input.classList.remove("input-error")
-  );
-
-  const name = nameInput.value.trim();
-  const phone = phoneInput.value.trim();
-  const jobTitle = jobInput.value.trim();
-  const nationalNo = idInput.value.trim();
-
-  if (!name) {
-    nameInput.classList.add("input-error");
-    showNotification("يرجى إدخال الاسم");
+  if (!empID || !patrolID) {
+    showNotification("يجب اختيار الموظف والدورية");
     return;
   }
 
-  if (!/^01[0-9]{9}$/.test(phone)) {
-    phoneInput.classList.add("input-error");
-    showNotification("يرجى إدخال رقم محمول صحيح");
-    return;
-  }
-
-  if (!jobTitle) {
-    jobInput.classList.add("input-error");
-    showNotification("يرجى إدخال المسمى الوظيفي");
-    return;
-  }
-
-  if (!/^[0-9]{14}$/.test(nationalNo)) {
-    idInput.classList.add("input-error");
-    showNotification("يرجى إدخال رقم قومي صحيح");
-    return;
-  }
-
-  const newSubscriber = {
-    nationalNo,
-    name,
-    jobTitle,
-    phone,
-    transportationSubscriptionStatus: 1,
+  const newSubscription = {
+    subscriptionID: 0,
+    patrolID: parseInt(patrolID),
+    employeeID: parseInt(empID),
+    transportationSubscriptionStatus: 0,
   };
 
   try {
+    console.log("🚀 الاشتراك الجديد:", newSubscription);
     const response = await fetch(
-      "https://movesmartapi.runasp.net/api/Employees",
+      "https://movesmartapi.runasp.net/api/PatrolsSubscriptions",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify(newSubscriber),
+        body: JSON.stringify(newSubscription),
       }
     );
 
-    if (!response.ok) throw new Error("فشل في حفظ المشترك");
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("تفاصيل الخطأ:", errorText);
+      throw new Error("فشل في حفظ الاشتراك");
+    }
 
-    showNotification("تمت إضافة المشترك بنجاح");
+    showNotification("تمت إضافة الاشتراك بنجاح");
     closePopup();
     await fetchSubscribers();
-
-    nameInput.value = "";
-    phoneInput.value = "";
-    jobInput.value = "";
-    idInput.value = "";
   } catch (error) {
     console.error(error);
-    showNotification("حدث خطأ أثناء حفظ المشترك");
+    showNotification("حدث خطأ أثناء حفظ الاشتراك");
   }
 }
 
 // ✅ Main init
 (async function init() {
-
   if (!token) {
     window.location.href = "../Login.html";
     return;

@@ -92,7 +92,7 @@
       // Get user role and determine which data to load
       const userRole = localStorage.getItem("userRole");
       const dataLoaders = getDataLoadersByRole(userRole);
-      
+
       // Load only the data that the user has access to
       await Promise.all(dataLoaders);
     } catch (error) {
@@ -104,7 +104,7 @@
   // Function to determine which data loaders to call based on user role
   function getDataLoadersByRole(userRole) {
     const loaders = [];
-    
+
     switch (userRole) {
       case "PatrolsSupervisor":
         // Only load drivers, buses (instead of cars), patrols, and subscriptions data
@@ -144,7 +144,7 @@
         console.warn("Unknown user role:", userRole);
         break;
     }
-    
+
     return loaders;
   }
 
@@ -310,7 +310,7 @@
       let availableBuses = 0;
       let workingBuses = 0;
 
-      buses.forEach(bus => {
+      buses.forEach((bus) => {
         if (bus.vehicle) {
           const status = bus.vehicle.status;
           if (status === 3) maintenanceBuses++;
@@ -406,9 +406,12 @@
       const rejectedElement = document.getElementById("orders-rejected");
 
       if (totalElement) totalElement.textContent = totalOrders.count;
-      if (pendingElement) pendingElement.textContent = pendingApplications.count;
-      if (approvedElement) approvedElement.textContent = confirmedApplications.count;
-      if (rejectedElement) rejectedElement.textContent = rejectedApplications.count;
+      if (pendingElement)
+        pendingElement.textContent = pendingApplications.count;
+      if (approvedElement)
+        approvedElement.textContent = confirmedApplications.count;
+      if (rejectedElement)
+        rejectedElement.textContent = rejectedApplications.count;
 
       // Create chart only if we're still on the dashboard page
       const chartCanvas = document.getElementById("orderChart");
@@ -482,30 +485,76 @@
     }
   }
 
-  // Patrol data functions
+  // تحديد حالة الدورية بناءً على الوقت الحالي
+  function getPatrolStatus(patrol) {
+    const now = new Date();
+
+    // استخراج توقيت البداية
+    const [hours, minutes, seconds] = patrol.movingAt.split(":").map(Number);
+    const today = new Date();
+    const start = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      hours,
+      minutes,
+      seconds
+    );
+
+    // حساب وقت النهاية باستخدام المدة التقديرية
+    const end = new Date(start.getTime() + patrol.approximatedTime * 60000);
+
+    // مقارنة الوقت الحالي
+    if (now < start) {
+      return "upcoming"; // لسه هتبدأ
+    } else if (now >= start && now <= end) {
+      return "working"; // شغالة دلوقتي
+    } else {
+      return "finished"; // انتهت
+    }
+  }
+
+  // تحميل بيانات الدوريات وتحديث الواجهة
   async function loadPatrolData() {
     try {
-      // For now, set default values
-      const totalPatrols = 25;
-      const workingPatrols = 8;
-      const availablePatrols = 12;
-      const completedPatrols = 5;
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        "https://movesmartapi.runasp.net/api/Patrols/All",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      // Update UI - check if elements exist before updating
-      const totalElement = document.getElementById("total-patrol");
-      const workingElement = document.getElementById("working-patrol");
-      const availableElement = document.getElementById("available-patrol");
-      const onleaveElement = document.getElementById("onleave-patrol");
+      if (!response.ok) throw new Error("فشل تحميل بيانات الدوريات");
 
-      if (totalElement) totalElement.textContent = totalPatrols;
-      if (workingElement) workingElement.textContent = workingPatrols;
-      if (availableElement) availableElement.textContent = availablePatrols;
-      if (onleaveElement) onleaveElement.textContent = completedPatrols;
+      const data = await response.json();
+      const patrols = data.$values || [];
 
-      // Create chart only if the chart element exists
+      // تقسيم الدوريات حسب الحالة
+      let workingPatrols = 0;
+      let upcomingPatrols = 0;
+      let finishedPatrols = 0;
+
+      patrols.forEach((patrol) => {
+        const status = getPatrolStatus(patrol);
+        if (status === "working") workingPatrols++;
+        else if (status === "upcoming") upcomingPatrols++;
+        else if (status === "finished") finishedPatrols++;
+      });
+
+      // تحديث الواجهة
+      document.getElementById("total-patrol").textContent = patrols.length;
+      document.getElementById("working-patrol").textContent = workingPatrols;
+      document.getElementById("available-patrol").textContent = upcomingPatrols;
+      document.getElementById("onleave-patrol").textContent = finishedPatrols;
+
+      // رسم المخطط البياني
       const chartElement = document.getElementById("patrolChart");
       if (chartElement) {
-        createPatrolChart([workingPatrols, availablePatrols, completedPatrols]);
+        createPatrolChart([workingPatrols, upcomingPatrols, finishedPatrols]);
       }
     } catch (error) {
       console.error("Error loading patrol data:", error);
