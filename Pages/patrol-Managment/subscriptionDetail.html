@@ -1,106 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>إدارة اشتراكات الموظفين</title>
-    <link
-      rel="stylesheet"
-      href="../../Assets/Styles/patrol-Managment/subscriptionDetail.css"
-    />
-  </head>
-  <body>
-    <div class="employee-subscription-container">
-      <div class="employee-top-section">
-        <div class="employee-header-container">
-          <h2 class="employee-header-title">إدارة اشتراكات الموظفين</h2>
-          <div class="employee-header-info">
-            <img
-              src="../../Assets/Images/driver-Avt.png"
-              class="employee-profile-pic"
-            />
-            <div class="employee-header-details">
-              <h2 id="employee-name">اسم الموظف</h2>
-              <p id="employee-phone">رقم الهاتف: غير متوفر</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="employee-left-side">
-          <button class="employee-back-btn back-btn">⬅ رجوع</button>
-          <div class="employee-actions">
-            <button class="employee-print-btn print-btn">🖨 طباعة</button>
-            <button class="employee-delete-btn delete-btn">🗑 حذف</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="employee-tabs-container">
-        <div class="employee-tabs">
-          <button class="employee-tab active tab" data-tab="employee-info">
-            معلومات الموظف
-          </button>
-          <button class="employee-tab tab" data-tab="subscriptions-info">
-            الاشتراكات
-          </button>
-        </div>
-        <button class="employee-save-btn save-btn">✅ حفظ</button>
-      </div>
-
-      <div class="employee-tab-content tab-content" id="employee-info">
-        <div class="employee-form-container">
-          <div class="employee-input-group">
-            <label>اسم الموظف:</label>
-            <input
-              type="text"
-              name="employeeName"
-              placeholder="أدخل اسم الموظف"
-            />
-          </div>
-          <div class="employee-input-group">
-            <label>رقم الهاتف:</label>
-            <input
-              type="tel"
-              name="employeePhone"
-              placeholder="أدخل رقم الهاتف"
-            />
-          </div>
-          <div class="employee-input-group">
-            <label>الرقم القومي:</label>
-            <input
-              type="text"
-              name="employeeNationalId"
-              placeholder="أدخل الرقم القومي"
-            />
-          </div>
-          <div class="employee-input-group">
-            <label>المسمى الوظيفي:</label>
-            <input
-              type="text"
-              name="employeeJobTitle"
-              placeholder="أدخل المسمى الوظيفي"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="employee-tab-content tab-content"
-        id="subscriptions-info"
-        style="display: none"
-      >
-        <div class="employee-subscription-list">
-          <div class="employee-subscription-header">
-            <div>رقم الدورية</div>
-            <div>وقت البدء</div>
-            <div>المدة (دق)</div>
-            <div>حالة الاشتراك</div>
-          </div>
-          <div class="employee-subscription-items subscription-items"></div>
-        </div>
-      </div>
-    </div>
-
-    <script src="../../Java script/patrol-Managment/subscriptionsDetail.js"></script>
-  </body>
-</html>

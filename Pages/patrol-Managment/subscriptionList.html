@@ -54,6 +54,7 @@
     <!-- Popup -->
     <div id="popup" class="subscription-popup hidden">
       <div class="subscription-popup-content">
+        <button class="close-btn" onclick="closePopup()">&times;</button>
         <h2>إضافة اشتراك</h2>
         <div id="notification" class="subscription-notification hidden"></div>
         <div class="subscription-form-grid">
@@ -66,8 +67,40 @@
             <select id="patrolSelect"></select>
           </div>
         </div>
-        <button onclick="saveNewSubscriber()">حفظ</button>
-        <button onclick="closePopup()">إلغاء</button>
+        <div class="button-group">
+          <button onclick="saveNewSubscriber()">حفظ</button>
+          <button class="cancel" onclick="closePopup()">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Popup -->
+    <div id="editPopup" class="subscription-popup hidden">
+      <div class="subscription-popup-content">
+        <button class="close-btn" onclick="closeEditPopup()">&times;</button>
+        <h2>تعديل الاشتراك</h2>
+        <div id="editNotification" class="subscription-notification hidden"></div>
+        <div class="subscription-form-grid edit-form">
+          <div>
+            <label for="editEmployeeSelect">الموظف</label>
+            <select id="editEmployeeSelect"></select>
+          </div>
+          <div>
+            <label for="editPatrolSelect">الدورية</label>
+            <select id="editPatrolSelect"></select>
+          </div>
+          <div>
+            <label for="editStatusSelect">حالة الاشتراك</label>
+            <select id="editStatusSelect">
+              <option value="0">متاحة</option>
+              <option value="1">منتهية</option>
+            </select>
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="saveEditedSubscriber()">حفظ التعديلات</button>
+          <button class="cancel" onclick="closeEditPopup()">إلغاء</button>
+        </div>
       </div>
     </div>
 

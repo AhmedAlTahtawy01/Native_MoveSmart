@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const pageTitle = document.querySelector('h2');
   pageTitle.style.cursor = 'pointer';
   pageTitle.addEventListener('click', function () {
-    window.location.href = `../dash-Boards/${userRole.toLowerCase()}Dashboard.html`;
+    window.location.href = `sharedLayout.html`;
   });
 });
 
@@ -148,6 +148,11 @@ function displayEmployee(list) {
   const container = document.getElementById("employee-container");
   container.innerHTML = "";
 
+  // Detect if we're in shared layout context
+  var isInSharedLayout = window.location.pathname.includes('sharedLayout.html') || 
+                          (window.location.pathname.includes('Pages') && !window.location.pathname.includes('employee-Managment')) ||
+                          typeof changeContent === 'function';
+
   list.forEach((employee) => {
     const employeeCard = document.createElement("div");
     employeeCard.classList.add("card");
@@ -160,7 +165,21 @@ function displayEmployee(list) {
 
     employeeCard.style.cursor = "pointer";
     employeeCard.addEventListener("click", () => {
-      openEditPop(employee);
+      if (isInSharedLayout && typeof changeContent === 'function') {
+        // In shared layout, use changeContent
+        sessionStorage.setItem("selectedEmployeeId", employee.employeeID);
+        
+        // Clear any existing URL parameters to ensure fresh loading
+        const currentUrl = new URL(window.location);
+        currentUrl.searchParams.delete("id");
+        window.history.replaceState({}, "", currentUrl);
+        
+        console.log('Navigating to employee details for employee ID:', employee.employeeID);
+        changeContent('employeeDetails');
+      } else {
+        // In standalone mode, navigate directly to the page
+        window.location.href = `employeeDetails.html?id=${employee.employeeID}`;
+      }
     });
 
     container.appendChild(employeeCard);

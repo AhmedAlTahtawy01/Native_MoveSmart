@@ -1,5 +1,5 @@
 .container {
-  width: 95%;  
+  width: 95%;
   margin: 20px auto;
   background: white;
   padding: 30px;
@@ -69,6 +69,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   margin-bottom: 30px;
   align-items: center;
+  gap: 16px;
   border: 1px solid rgba(212, 175, 55, 0.1);
   position: relative;
   overflow: hidden;
@@ -247,11 +248,30 @@
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
 }
 
+/* الكروت */
 .cards-container {
   width: 70%;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.cards-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), transparent);
+  border-radius: 0 12px 0 50px;
 }
 
 .card {
@@ -264,6 +284,8 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .card::before {
@@ -294,6 +316,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .card h3::before {
@@ -301,6 +325,7 @@
   font-size: 12px;
   color: #d4af37;
   animation: pulse 2s infinite;
+  flex-shrink: 0;
 }
 
 @keyframes pulse {
@@ -310,7 +335,7 @@
 
 .card-details {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 12px;
   margin-bottom: 20px;
 }
@@ -326,6 +351,12 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: right;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
 }
 
 .card-details p::before {
@@ -420,7 +451,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  direction: ltr;
+  direction: rtl;
   backdrop-filter: blur(4px);
   animation: fadeIn 0.3s ease-out;
 }
@@ -429,8 +460,9 @@
   background: #fff;
   padding: 32px 36px;
   border-radius: 16px;
-  width: 100%;
-  max-width: 450px;
+  width: 90%;
+  max-width: 600px;
+  min-width: 400px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -439,6 +471,7 @@
   border: 1px solid rgba(212, 175, 55, 0.1);
   position: relative;
   overflow: hidden;
+  text-align: right;
 }
 
 .popup-content::before {
@@ -493,6 +526,7 @@
   font-size: 14px;
   display: block;
   position: relative;
+  text-align: right;
 }
 
 .popup-content label::after {
@@ -512,6 +546,8 @@
   width: 100%;
   box-sizing: border-box;
   position: relative;
+  text-align: right;
+  direction: rtl;
 }
 
 .popup-content input:focus {
@@ -527,6 +563,7 @@
   justify-content: space-between;
   gap: 16px;
   margin-top: 24px;
+  direction: ltr;
 }
 
 .popup-buttons button {
@@ -686,96 +723,47 @@
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1920px) {
-  .container {
-    width: 90%;
-    padding: 24px;
-    margin: 16px auto;
-  }
-  
-  .header {
-    flex-direction: row;
-    gap: 16px;
-    padding: 20px;
-  }
-  
-  .content {
-    flex-direction: row;
-    gap: 20px;
-  }
-  
+@media screen and (min-width: 768px) {
   .parts-list {
-    width: 28%;
-    padding: 16px;
+    flex: 0 0 30%;
   }
-  
+
   .cards-container {
-    width: 72%;
-    gap: 16px;
+    flex: 0 0 68%;
   }
   
-  .card {
-    padding: 20px;
-    border-radius: 12px;
-  }
-  
-  .popup-content {
-    min-width: 400px;
-    padding: 28px;
-  }
-  
-  .card-buttons {
-    gap: 10px;
-  }
-  
-  .actions {
-    gap: 10px;
+  .card-details {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 1023px) {
+@media screen and (max-width: 767px) {
   .container {
-    width: 95%;
+    width: 98%;
     padding: 20px;
+    margin: 10px auto;
   }
   
   .content {
     flex-direction: column;
-    gap: 20px;
   }
-  
-  .parts-list {
-    width: 100%;
-    position: static;
-  }
-  
+
+  .parts-list,
   .cards-container {
     width: 100%;
   }
-  
-  .card-details {
-    grid-template-columns: 1fr;
-  }
-}
 
-@media (max-width: 767px) {
-  .container {
-    width: 98%;
-    padding: 16px;
-    margin: 10px auto;
-  }
-  
   .header {
     flex-direction: column;
     align-items: flex-start;
     padding: 20px;
   }
-  
+
   .actions {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .actions input,
   .actions button {
     width: 100%;
@@ -783,6 +771,10 @@
   
   .card {
     padding: 20px;
+  }
+  
+  .card-details {
+    grid-template-columns: 1fr;
   }
   
   .popup-content {
@@ -793,8 +785,28 @@
   .popup-buttons {
     flex-direction: column;
   }
-  
-  .page-title {
-    font-size: 24px;
-  }
+}
+
+/* Improved layout fixes */
+.card {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card h3 {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.card-details p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: right;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.card-details {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }

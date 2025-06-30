@@ -125,9 +125,9 @@ function renderSubscribers(list) {
     const statusText =
       sub.transportationSubscriptionStatus === 0 ? "متاحة" : "منتهية";
     const statusClass =
-      sub.transportationSubscriptionStatus === 1
-        ? "status-active"
-        : "status-ended";
+      sub.transportationSubscriptionStatus === 0
+        ? "status-0"
+        : "status-1";
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -137,8 +137,10 @@ function renderSubscribers(list) {
       <td>${sub.name || "—"}</td>
     `;
     tr.style.cursor = "pointer";
-    tr.onclick = () => {
-      window.location.href = `patrol-Managment/subscriptionDetail.html?id=${sub.employeeID}`;
+    tr.onclick = (event) => {
+      event.stopPropagation();
+      console.log("Row clicked:", sub);
+      openEditPopup(sub);
     };
     tbody.appendChild(tr);
   });
@@ -243,6 +245,163 @@ async function saveNewSubscriber() {
     showNotification("حدث خطأ أثناء حفظ الاشتراك");
   }
 }
+
+// Edit functionality
+if (typeof window.currentEditingSubscription === "undefined") {
+  window.currentEditingSubscription = null;
+}
+
+function openEditPopup(subscription) {
+  window.currentEditingSubscription = subscription;
+  document.getElementById("editPopup").classList.remove("hidden");
+  loadEditFormData(subscription);
+}
+
+function closeEditPopup() {
+  document.getElementById("editPopup").classList.add("hidden");
+  window.currentEditingSubscription = null;
+  document.getElementById("editNotification").classList.add("hidden");
+}
+
+async function loadEditFormData(subscription) {
+  try {
+    // Load employees for edit form
+    const empRes = await fetch(
+      "https://movesmartapi.runasp.net/api/Employees/All",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    const empData = await empRes.json();
+    const employees = empData.$values || [];
+
+    const editEmpSelect = document.getElementById("editEmployeeSelect");
+    editEmpSelect.innerHTML = '<option disabled value="">اختر موظفًا</option>';
+    employees.forEach((emp) => {
+      const option = document.createElement("option");
+      option.value = emp.employeeID;
+      option.textContent = emp.name;
+      if (emp.employeeID === subscription.employeeID) {
+        option.selected = true;
+      }
+      editEmpSelect.appendChild(option);
+    });
+
+    // Load patrols for edit form
+    const patrolRes = await fetch(
+      "https://movesmartapi.runasp.net/api/Patrols/All",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    const patrolData = await patrolRes.json();
+    const patrols = patrolData.$values || [];
+
+    const editPatrolSelect = document.getElementById("editPatrolSelect");
+    editPatrolSelect.innerHTML = '<option disabled value="">اختر الدورية</option>';
+    patrols.forEach((patrol) => {
+      const option = document.createElement("option");
+      option.value = patrol.patrolID;
+      option.textContent = `دورية ${patrol.patrolID} - ${
+        (patrol.movingAt || "").split("T")[0]
+      }`;
+      if (patrol.patrolID === subscription.patrolID) {
+        option.selected = true;
+      }
+      editPatrolSelect.appendChild(option);
+    });
+
+    // Set status
+    document.getElementById("editStatusSelect").value = subscription.transportationSubscriptionStatus;
+  } catch (err) {
+    console.error(err);
+    showEditNotification("خطأ في تحميل بيانات التعديل");
+  }
+}
+
+function showEditNotification(message) {
+  const note = document.getElementById("editNotification");
+  note.textContent = message;
+  note.classList.remove("hidden");
+  setTimeout(() => {
+    note.classList.add("hidden");
+  }, 3000);
+}
+
+async function saveEditedSubscriber() {
+  if (!window.currentEditingSubscription) {
+    showEditNotification("لا يوجد اشتراك للتعديل");
+    return;
+  }
+
+  const empID = document.getElementById("editEmployeeSelect").value;
+  const patrolID = document.getElementById("editPatrolSelect").value;
+  const status = document.getElementById("editStatusSelect").value;
+
+  if (!empID || !patrolID) {
+    showEditNotification("يجب اختيار الموظف والدورية");
+    return;
+  }
+
+  const updatedSubscription = {
+    subscriptionID: window.currentEditingSubscription.subscriptionID,
+    patrolID: parseInt(patrolID),
+    employeeID: parseInt(empID),
+    transportationSubscriptionStatus: parseInt(status),
+  };
+
+  try {
+    console.log("🔄 تحديث الاشتراك:", updatedSubscription);
+    const response = await fetch(
+      "https://movesmartapi.runasp.net/api/PatrolsSubscriptions",
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(updatedSubscription),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("تفاصيل الخطأ:", errorText);
+      throw new Error("فشل في تحديث الاشتراك");
+    }
+
+    showEditNotification("تم تحديث الاشتراك بنجاح");
+    closeEditPopup();
+    await fetchSubscribers();
+  } catch (error) {
+    console.error(error);
+    showEditNotification("حدث خطأ أثناء تحديث الاشتراك");
+  }
+}
+
+// Add click outside to close functionality
+document.addEventListener('click', function(event) {
+  const popup = document.getElementById("popup");
+  const editPopup = document.getElementById("editPopup");
+  
+  // Close add popup when clicking outside
+  if (!popup.classList.contains("hidden") && 
+      !popup.querySelector('.subscription-popup-content').contains(event.target) &&
+      !event.target.closest('#addSubscriber')) {
+    closePopup();
+  }
+  
+  // Close edit popup when clicking outside
+  if (!editPopup.classList.contains("hidden") && 
+      !editPopup.querySelector('.subscription-popup-content').contains(event.target) &&
+      !event.target.closest('#subscriberList')) {
+    closeEditPopup();
+  }
+});
 
 // ✅ Main init
 (async function init() {

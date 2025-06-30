@@ -155,25 +155,25 @@
 
 .content {
   display: flex;
-  flex-direction: row;
   gap: 24px;
-  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
-.parts-list,
-.cards-container {
+.consumables-list {
+  width: 30%;
   background: #fff;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  flex: 1 1 100%;
+  height: fit-content;
   border: 1px solid rgba(212, 175, 55, 0.1);
+  position: sticky;
+  top: 20px;
   position: relative;
   overflow: hidden;
 }
 
-.parts-list::before,
-.cards-container::before {
+.consumables-list::before {
   content: '';
   position: absolute;
   top: 0;
@@ -184,11 +184,93 @@
   border-radius: 0 12px 0 50px;
 }
 
+.consumables-list h3 {
+  color: #d4af37;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.consumables-list h3::before {
+  content: '📋';
+  font-size: 16px;
+}
+
+.consumables-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.consumables-list li {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-weight: 500;
+  color: #555;
+  position: relative;
+  overflow: hidden;
+}
+
+.consumables-list li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.consumables-list li:hover::before {
+  left: 100%;
+}
+
+.consumables-list li:hover {
+  background: rgba(212, 175, 55, 0.1);
+  color: #d4af37;
+  transform: translateX(-4px);
+}
+
+.consumables-list li.active {
+  background: #d4af37;
+  color: white;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
 /* الكروت */
 .cards-container {
+  width: 70%;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.cards-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), transparent);
+  border-radius: 0 12px 0 50px;
 }
 
 .card {
@@ -357,7 +439,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  direction: ltr;
+  direction: rtl;
   backdrop-filter: blur(4px);
   animation: fadeIn 0.3s ease-out;
 }
@@ -366,8 +448,9 @@
   background: #fff;
   padding: 32px 36px;
   border-radius: 16px;
-  width: 100%;
-  max-width: 450px;
+  width: 90%;
+  max-width: 600px;
+  min-width: 400px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -376,6 +459,7 @@
   border: 1px solid rgba(212, 175, 55, 0.1);
   position: relative;
   overflow: hidden;
+  text-align: right;
 }
 
 .popup-content::before {
@@ -430,6 +514,7 @@
   font-size: 14px;
   display: block;
   position: relative;
+  text-align: right;
 }
 
 .popup-content label::after {
@@ -449,6 +534,8 @@
   width: 100%;
   box-sizing: border-box;
   position: relative;
+  text-align: right;
+  direction: rtl;
 }
 
 .popup-content input:focus {
@@ -464,6 +551,7 @@
   justify-content: space-between;
   gap: 16px;
   margin-top: 24px;
+  direction: ltr;
 }
 
 .popup-buttons button {
@@ -624,7 +712,7 @@
 }
 
 @media screen and (min-width: 768px) {
-  .parts-list {
+  .consumables-list {
     flex: 0 0 30%;
   }
 
@@ -648,7 +736,7 @@
     flex-direction: column;
   }
 
-  .parts-list,
+  .consumables-list,
   .cards-container {
     width: 100%;
   }
@@ -685,4 +773,28 @@
   .popup-buttons {
     flex-direction: column;
   }
+}
+
+/* Improved layout fixes */
+.card {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card h3 {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.card-details p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: right;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.card-details {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }

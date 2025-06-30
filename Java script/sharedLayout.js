@@ -217,6 +217,11 @@ function changeContent(page) {
       scriptPath = "../../Java script/employee-Managment/employeesList.js";
       break;
 
+    case "employeeDetails":
+      pagePath = "employee-Managment/employeeDetails.html";
+      scriptPath = "../../Java script/employee-Managment/employeeDetails.js";
+      break;
+
     default:
       pagePath = "dash-Boards/index.html";
       scriptPath = "";
@@ -250,6 +255,7 @@ function changeContent(page) {
 
         // Clean up global variables that might cause redeclaration issues
         cleanupGlobalVariables();
+        
         const script = document.createElement("script");
         script.src = scriptPath;
         script.defer = true;
@@ -258,6 +264,12 @@ function changeContent(page) {
         script.onerror = function () {
           console.error(`Failed to load script: ${scriptPath}`);
         };
+        
+        // Add onload handler for script loading
+        script.onload = function () {
+          console.log(`Script loaded successfully: ${scriptPath}`);
+        };
+        
         document.body.appendChild(script);
       }
     })
@@ -297,7 +309,10 @@ function cleanupGlobalVariables() {
     "busesMap",
     "driversMap",
     "headers",
-    "allowedRoles"
+    "allowedRoles",
+    "currentEditingSubscription",
+    "allSubscribers",
+    "allEmployeesMap"
   ];
 
   // Common constants that might be redeclared
