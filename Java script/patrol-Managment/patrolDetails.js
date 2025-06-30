@@ -19,13 +19,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     return;
   }
 
-  // ✅ دالة مساعدة لاستخراج ID الدورية من الرابط
+  //  دالة مساعدة لاستخراج ID الدورية من الرابط
   function getPatrolIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.get("id");
   }
 
-  // ✅ جلب بيانات الدورية
+  //  جلب بيانات الدورية
   async function fetchPatrolById(id) {
     try {
       const res = await fetch(`https://movesmartapi.runasp.net/api/Patrols/${id}`, {
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  // ✅ جلب بيانات الباص
+  //  جلب بيانات الباص
   async function fetchBusById(busID) {
     try {
       const res = await fetch(`https://movesmartapi.runasp.net/api/Buses/ByID/${busID}`, {
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  // ✅ جلب بيانات السائق
+  //  جلب بيانات السائق
   async function fetchDriverById(driverID) {
     try {
       const res = await fetch(`https://movesmartapi.runasp.net/api/Drivers/ByID/${driverID}`, {
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  // ✅ جلب اشتراكات الدورية
+  //  جلب اشتراكات الدورية
   async function fetchSubscriptionsByPatrol(patrolID) {
     try {
       const res = await fetch(`https://movesmartapi.runasp.net/api/PatrolsSubscriptions/AllForPatrol/${patrolID}`, {
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  // ✅ جلب موظف حسب ID
+  //  جلب موظف حسب ID
   async function fetchEmployeeById(employeeId) {
     try {
       const res = await fetch(`https://movesmartapi.runasp.net/api/Employees/ByID/${employeeId}`, {
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  // ✅ ترجمة حالة السيارة
+  //  ترجمة حالة السيارة
   function getVehicleStatusText(status) {
     switch (status) {
       case 0: return "متاحة";
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  // ✅ عرض كل تفاصيل الدورية في الصفحة
+  //  عرض كل تفاصيل الدورية في الصفحة
   async function displayPatrolDetails() {
     const patrolId = getPatrolIdFromUrl();
     if (!patrolId) return;
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("bus-available").value = bus?.availableSpace ?? "";
     document.getElementById("bus-seats").value = bus?.totalSeats ?? "";
 
-    // ✅ جلب و عرض المشتركين في الدورية
+    //  جلب و عرض المشتركين في الدورية
     const subscriptions = await fetchSubscriptionsByPatrol(patrol.patrolID);
     const employees = [];
 
@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   await displayPatrolDetails();
 });
 
-// ✅ التحكم في التابات
+//  التحكم في التابات
 function switchTab(tabName) {
   document.querySelectorAll(".tab-content").forEach((tab) => {
     tab.classList.remove("show");
@@ -188,12 +188,12 @@ function switchTab(tabName) {
   event.target.classList.add("active");
 }
 
-// ✅ طباعة الصفحة
+//  طباعة الصفحة
 function printPage() {
   window.print();
 }
 
-// ✅ الرجوع للخلف
+//  الرجوع للخلف
 function goBack() {
   history.back();
 }

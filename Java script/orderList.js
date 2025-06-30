@@ -7,6 +7,9 @@ if (typeof userRole === 'undefined') {
 if (typeof userName === 'undefined') {
   var userName = localStorage.getItem('userName');
 }
+if(typeof role === 'undefined'){
+  var role = localStorage.getItem('userRole')
+}
 // Navigation functionality
 console.log("Role from localStorage:", localStorage.getItem("userRole"));
 
@@ -123,14 +126,16 @@ document.addEventListener("DOMContentLoaded", function () {
     SuperUser: [
       "jobOrder",
       "purchaseOrder",
-      "payOrder",
-      "maintananceOrder",
-      "missionOrder",
+      "WithdrawOrder",
+      "maintenanceRequestsCard",
+      "actualMaintenanceCard",
+      "missionNotesCard",
+      "missionOrder"
     ],
     AdministrativeSupervisor: [
       "jobOrder",
       "purchaseOrder",
-      "payOrder",
+      "WithdrawOrder",
       "maintananceOrder",
       "missionOrder"
     ],
@@ -138,14 +143,14 @@ document.addEventListener("DOMContentLoaded", function () {
     GeneralManager: [
       "jobOrder",
       "purchaseOrder",
-      "payOrder",
+      "WithdrawOrder",
       "maintananceOrder",
       "missionOrder",
     ],
     GeneralSupervisor: [
       "jobOrder",
       "purchaseOrder",
-      "payOrder",
+      "WithdrawOrder",
       "maintananceOrder",
       "missionOrder",
     ],
@@ -184,14 +189,13 @@ document.addEventListener("DOMContentLoaded", function () {
         showAccessDeniedMessage(card.querySelector(".card-title").textContent);
       };
     } else if (cardId === "jobOrder") {
-      // Job order is available - keep existing functionality
       card.onclick = showJobOrders;
-    } else {
-      // Other applications - show coming soon message
-      card.onclick = function () {
-        showComingSoonMessage(card.querySelector(".card-title").textContent);
-      };
-    }
+    } 
+    // else {
+    //   card.onclick = function () {
+    //     showComingSoonMessage(card.querySelector(".card-title").textContent);
+    //   };
+    // }
   });
 });
 
@@ -2784,7 +2788,7 @@ window.missionNotesApi = "https://movesmartapi.runasp.net/api/MissionsNotes/All"
 
 // ✅ إظهار الكارت حسب الدور
 if (
-  ["HospitalManager", "GeneralManager", "GeneralSupervisor","AdministrativeSupervisor"].includes(userRole)
+  ["HospitalManager", "GeneralManager", "GeneralSupervisor","AdministrativeSupervisor","SuperUser"].includes(userRole)
 ) {
   document
     .getElementById("missionOrder")
