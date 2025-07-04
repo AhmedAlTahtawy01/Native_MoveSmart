@@ -2680,7 +2680,7 @@ async function submitMissionNote(e) {
     application: {
       applicationId: applicationId,
       creationDate: new Date().toISOString(),
-      status: 1, //  مقبول
+      status: 1,
       applicationType: 2, // مأمورية
       applicationDescription: document.getElementById("descriptionInput").value,
       createdByUserID: parseInt(userId),
@@ -2764,22 +2764,6 @@ async function cancelMissionNote(noteID) {
     fetchMissionNotes();
   } else {
     alert("حدث خطأ أثناء الإلغاء");
-  }
-}
-
-// ✅ تحويل كود الحالة لنص
-function mapStatus(code) {
-  switch (code) {
-    case 1:
-      return "مقبول";
-    case 2:
-      return "قيد الانتظار";
-    case 3:
-      return "مرفوض";
-    case 4:
-      return "ملغي";
-    default:
-      return "غير معروف";
   }
 }
 
@@ -2929,8 +2913,6 @@ function editMissionOrder(order) {
   openAddMissionOrderForm();
   document.getElementById("missionOrderForm").dataset.editId = order.missionId;
   document.getElementById("missionNoteSelect").value = order.missionNoteId;
-  document.getElementById("missionVehicleSelect").value =
-    order.missionVehiclesId;
   document.getElementById("destination").value = order.destination;
   document.getElementById("startDate").value = order.startDate.slice(0, 10);
   document.getElementById("endDate").value = order.endDate.slice(0, 10);
@@ -2952,9 +2934,6 @@ async function submitMissionOrder(e) {
   const payload = {
     missionId: editId ? parseInt(editId) : 0,
     missionNoteId: parseInt(document.getElementById("missionNoteSelect").value),
-    missionVehiclesId: parseInt(
-      document.getElementById("missionVehicleSelect").value
-    ),
     startDate: new Date(`${startDate}`).toISOString(),
     endDate: new Date(`${endDate}`).toISOString(),
     destination: missiondestination,
