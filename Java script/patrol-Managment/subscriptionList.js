@@ -1,4 +1,13 @@
-console.log(window.token, window.userRole, window.userName, window.role);
+// Get authentication data from localStorage (only if not already declared)
+if (typeof token === 'undefined') {
+  var token = localStorage.getItem('token');
+}
+if (typeof userRole === 'undefined') {
+  var userRole = localStorage.getItem('userRole');
+}
+if (typeof userName === 'undefined') {
+  var userName = localStorage.getItem('userName');
+}
 
 if (typeof window.allSubscribers === "undefined") {
   window.allSubscribers = [];
@@ -407,11 +416,6 @@ document.addEventListener('click', function(event) {
 (async function init() {
   if (!token) {
     window.location.href = "../Login.html";
-    return;
-  }
-
-  if (userRole !== "PatrolsSupervisor") {
-    window.location.href = `${userRole.toLowerCase()}Dashboard.html`;
     return;
   }
 
